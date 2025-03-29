@@ -2,6 +2,7 @@ import GuestbookList from "./components/guestbook/GuestbookList";
 import GuestbookTopbar from "./components/guestbook/GuestbookTopbar";
 import Header from "./components/layout/Header";
 import { mockGuestbookItems } from "./constants/mockData";
+import MiniplayerMock from "./components/player/MiniPlayer";
 
 function App() {
     return (
@@ -12,6 +13,8 @@ function App() {
                 <GuestbookTopbar />
 
                 <GuestbookList items={mockGuestbookItems} />
+
+                <MiniplayerMock />
             </div>
         </div>
     );
