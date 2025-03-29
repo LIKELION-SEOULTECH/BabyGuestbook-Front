@@ -12,6 +12,7 @@
     "dependencies": {
         "@radix-ui/react-slot": "^1.1.2",
         "@tailwindcss/vite": "^4.0.17",
+        "@tanstack/react-query": "^5.70.0",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
         "lucide-react": "^0.484.0",
@@ -23,6 +24,7 @@
     },
     "devDependencies": {
         "@eslint/js": "^9.21.0",
+        "@tanstack/eslint-plugin-query": "^5.68.0",
         "@types/react": "^19.0.12",
         "@types/react-dom": "^19.0.4",
         "@vitejs/plugin-react-swc": "^3.8.0",
