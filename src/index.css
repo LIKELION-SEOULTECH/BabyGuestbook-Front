@@ -120,6 +120,26 @@
     }
 }
 
+/*
+ Note)
+ Tailwind 4.0
+ 이제 taiwind.config 파일 없이 CSS-first로 작성합니다!
+*/
 @theme {
     --font-sans: "SUITE", sans-serif;
+    --color-lion-orange: #ff7710;
+    --color-lion-black: #1c1b1a;
+    --color-surface: #2a2927;
+    --color-border: #3a3a3a;
+    --color-primary: #f0f0f0;
+    --color-secondary: #c4c4c4;
+
+    /* 🎧 감정별 컬러 */
+    --color-emotion-happy: #ff9350;
+    --color-emotion-sad: #7ca7ff;
+    --color-emotion-angry: #ff6b6b;
+    --color-emotion-surprised: #ffd479;
+    --color-emotion-fear: #a18adf;
+    --color-emotion-calm: #e0e0e0;
+    --color-emotion-uncomfortable: #8fc1a9;
 }
