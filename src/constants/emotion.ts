@@ -24,8 +24,8 @@ export const emotionConfigs: Record<EmotionConfig["key"], EmotionConfig> = {
     sad: {
         key: "sad",
         label: "슬픔",
-        playlistButtonTextPreColored: "슬픔",
-        playlistButtonTextPost: "을 감싸줄 노래",
+        playlistButtonTextPreColored: "슬픔을",
+        playlistButtonTextPost: "감싸줄 노래",
         color: "#7ca7ff", // --color-emotion-sad
     },
     angry: {
@@ -45,8 +45,8 @@ export const emotionConfigs: Record<EmotionConfig["key"], EmotionConfig> = {
     fear: {
         key: "fear",
         label: "공포",
-        playlistButtonTextPreColored: "공포",
-        playlistButtonTextPost: "를 달래주는 잔잔한 선율",
+        playlistButtonTextPreColored: "공포를",
+        playlistButtonTextPost: "달래주는 잔잔한 선율",
         color: "#a18adf", // --color-emotion-fear
     },
     calm: {
