@@ -1,31 +1,34 @@
-import { GuestbookData } from "@/components/guestbook/GuestbookList";
+import { PostDTO } from "@/api/post";
 
-export const mockGuestbookItems: GuestbookData[] = [
+export const mockGuestbookItems: PostDTO[] = [
     {
         postId: 1,
-        author: "멋쟁이사자",
-        time: "3분 전",
         content:
             "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-        commentCount: 3,
         emotion: "happy",
+        user: { userId: 1, username: "멋쟁이사자" },
+        updatedAt: "2023-03-15T12:34:56Z",
+        likeCnt: 10,
+        commentCnt: 3,
     },
     {
         postId: 2,
-        author: "행복한고양이",
-        time: "5분 전",
         content:
             "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.",
-        commentCount: 5,
         emotion: "calm",
+        user: { userId: 2, username: "행복한고양이" },
+        updatedAt: "2023-03-15T12:30:00Z",
+        likeCnt: 20,
+        commentCnt: 5,
     },
     {
         postId: 3,
-        author: "슬픈강아지",
-        time: "10분 전",
         content:
             "Quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-        commentCount: 2,
         emotion: "sad",
+        user: { userId: 3, username: "슬픈강아지" },
+        updatedAt: "2023-03-15T12:20:00Z",
+        likeCnt: 8,
+        commentCnt: 2,
     },
 ];
