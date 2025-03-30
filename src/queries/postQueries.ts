@@ -1,5 +1,5 @@
 import { deletePost, fetchPosts, updatePost } from "@/api/post";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 
 // 방명록 가져오기, 처음에 한번만 호출
 export const usePostsQuery = (params: {
@@ -17,12 +17,33 @@ export const usePostsQuery = (params: {
 export const usePostsInfiniteQuery = (params: {
   order: "LATEST" | "OLDEST";
   emotion?: string;
-  pageSize: number;
-  lastPostId: number; // 두번째 요청부터, 무한 스크롤을 위해
 }) => {
-  return useQuery({
+  return useInfiniteQuery({
     queryKey: ["posts", params],
-    queryFn: () => fetchPosts(params),
+    queryFn: ({ pageParam }) => fetchPosts(pageParam),
+    initialPageParam: {
+      order: params.order,
+      emotion: params.emotion,
+      pageSize: 10,
+    },
+    getNextPageParam: (lastPage, pages) => {
+      // 마지막 postId를 가져와서 다음 페이지의 lastPostId로 사용
+      const lastPost = lastPage.data[lastPage.data.length - 1];
+
+      // post data 배열의 길이가 0이면 더이상 가져올 포스트가 없으므로 undefined 리턴
+      if (!lastPost || lastPage.data.length === 0) {
+        return undefined;
+      }
+
+      if (lastPost) {
+        return {
+          order: params.order,
+          emotion: params.emotion,
+          pageSize: 10, // 10개씩 가져오기
+          lastPostId: lastPost.postId,
+        };
+      }
+    },
   });
 };
 

@@ -1,13 +1,33 @@
 import { patch } from "axios";
 import { client } from "./client";
 
+interface FetchPostResponse {
+  code: string;
+  statusCode: number;
+  message: string;
+  data: PostDTO[];
+}
+
+interface PostDTO {
+  postId: number;
+  content: string;
+  emotion: string;
+  user: {
+    userId: number;
+    username: string;
+  };
+  updatedAt: string;
+  likeCnt: number;
+  commentCnt: number;
+}
+
 export const fetchPosts = async (params: {
   order: "LATEST" | "OLDEST";
   emotion?: string;
   pageSize: number;
   lastPostId?: number;
-}) => {
-  const response = await client.get("posts", {
+}): Promise<FetchPostResponse> => {
+  const response = await client.get<FetchPostResponse>("posts", {
     params: {
       order: params.order,
       emotion: params.emotion,
