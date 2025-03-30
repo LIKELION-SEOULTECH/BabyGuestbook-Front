@@ -1,5 +1,5 @@
-import { patch } from "axios";
 import { client } from "./client";
+import { emotionConfigs } from "@/constants/emotion";
 
 export interface FetchPostResponse {
     code: string;
@@ -11,7 +11,7 @@ export interface FetchPostResponse {
 export interface PostDTO {
     postId: number;
     content: string;
-    emotion: string;
+    emotion: keyof typeof emotionConfigs;
     user: {
         userId: number;
         username: string;
