@@ -11,6 +11,7 @@ import GuestbookActionDialog from "./GuestbookActionDialog";
 import useGuestbookAction from "@/hooks/guestbook/useGuestbookAction";
 import { emotionConfigs } from "@/constants/emotion";
 import { PostDTO } from "@/api/post";
+import { formatRelativeDate } from "@/lib/formatRelativeDate";
 
 export interface GuestbookItemProps extends PostDTO {
     onCommentClick?: () => void;
@@ -49,6 +50,11 @@ function GuestbookItem({
     const { activeAction, openActionDialog, closeActionDialog } =
         useGuestbookAction();
 
+    const relativeUpdatedTime = useMemo(
+        () => formatRelativeDate(updatedAt),
+        [updatedAt]
+    );
+
     // dialog handler - 수정 삭제 발생 시 trigger
     const handleActionSubmit = useCallback(
         (data: { content?: string; password: string }) => {
@@ -71,7 +77,7 @@ function GuestbookItem({
                         <div className="flex items-center gap-2 text-secondary text-sm leading-none tracking-tight">
                             <span>{user.username}</span>
                             <span className="w-0.5 h-0.5 bg-secondary rounded-full" />
-                            <span>{updatedAt}</span>
+                            <span>{relativeUpdatedTime}</span>
                         </div>
 
                         {/* Body - 방명록 내용 */}
