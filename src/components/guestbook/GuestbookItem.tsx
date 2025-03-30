@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { MessageSquare, Play } from "lucide-react";
 import {
     ContextMenu,
@@ -5,7 +6,19 @@ import {
     ContextMenuItem,
     ContextMenuTrigger,
 } from "../ui/context-menu";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "../ui/dialog";
+import { Textarea } from "../ui/textarea";
 import { emotionConfigs, EmotionConfig } from "@/constants/emotion";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
 
 export interface GuestbookItemProps {
     postId: number;
@@ -33,6 +46,7 @@ export interface GuestbookItemProps {
  * @returns React.ReactElement
  */
 function GuestbookItem({
+    postId,
     author,
     time,
     content,
@@ -42,6 +56,20 @@ function GuestbookItem({
     onPlaylistClick,
 }: GuestbookItemProps) {
     const emotionConfig = emotionConfigs[emotion];
+    const [editContent, setEditContent] = useState(content);
+    const [editPassword, setEditPassword] = useState("");
+
+    const handleEditSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+
+        console.log("방명록 수정 제출", { postId, editContent, editPassword });
+    };
+
+    const handleDeleteSubmit = (e: React.FormEvent, password: string) => {
+        e.preventDefault();
+
+        console.log("방명록 삭제 제출", { postId, password });
+    };
 
     return (
         <ContextMenu>
@@ -96,16 +124,91 @@ function GuestbookItem({
                 </div>
             </ContextMenuTrigger>
             <ContextMenuContent>
-                <ContextMenuItem className="cursor-pointer" onClick={() => {}}>
-                    수정하기
-                </ContextMenuItem>
-                <ContextMenuItem
-                    variant="destructive"
-                    className="cursor-pointer"
-                    onClick={() => {}}
-                >
-                    삭제하기
-                </ContextMenuItem>
+                {/* 수정하기 Dialog */}
+                <Dialog>
+                    <DialogTrigger asChild>
+                        <ContextMenuItem className="cursor-pointer">
+                            수정하기
+                        </ContextMenuItem>
+                    </DialogTrigger>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>방명록 수정</DialogTitle>
+                            <DialogDescription>
+                                방명록 내용을 수정하고, 비밀번호를 입력해 본인
+                                인증을 진행한다.
+                            </DialogDescription>
+                        </DialogHeader>
+                        <form
+                            onSubmit={handleEditSubmit}
+                            className="flex flex-col gap-4"
+                        >
+                            <Textarea
+                                value={editContent}
+                                onChange={(e) => setEditContent(e.target.value)}
+                                placeholder="수정할 내용을 입력하세요."
+                                className="w-full"
+                            />
+                            <Input
+                                type="password"
+                                value={editPassword}
+                                onChange={(e) =>
+                                    setEditPassword(e.target.value)
+                                }
+                                placeholder="비밀번호를 입력하세요."
+                                className="w-full"
+                            />
+                            <DialogFooter>
+                                <Button type="submit">수정 완료</Button>
+                            </DialogFooter>
+                        </form>
+                    </DialogContent>
+                </Dialog>
+
+                {/* 삭제하기 Dialog */}
+                <Dialog>
+                    <DialogTrigger asChild>
+                        <ContextMenuItem
+                            variant="destructive"
+                            className="cursor-pointer"
+                        >
+                            삭제하기
+                        </ContextMenuItem>
+                    </DialogTrigger>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>삭제 확인</DialogTitle>
+                            <DialogDescription>
+                                방명록 삭제를 위해 비밀번호를 입력해 본인 인증을
+                                진행한다.
+                            </DialogDescription>
+                        </DialogHeader>
+                        <form
+                            onSubmit={(e) =>
+                                handleDeleteSubmit(
+                                    e,
+                                    (
+                                        e.currentTarget
+                                            .password as HTMLInputElement
+                                    ).value
+                                )
+                            }
+                            className="flex flex-col gap-4"
+                        >
+                            <Input
+                                name="password"
+                                type="password"
+                                placeholder="비밀번호를 입력하세요."
+                                className="w-full"
+                            />
+                            <DialogFooter>
+                                <Button type="submit" variant="destructive">
+                                    삭제하기
+                                </Button>
+                            </DialogFooter>
+                        </form>
+                    </DialogContent>
+                </Dialog>
             </ContextMenuContent>
         </ContextMenu>
     );
