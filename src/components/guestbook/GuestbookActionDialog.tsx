@@ -11,36 +11,30 @@ import { Textarea } from "../ui/textarea";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 
-type ActionType = "edit" | "delete" | null; // type safety를 위해 null을 추가
-
-interface GuestbookActionDialogProps {
+export interface GuestbookActionDialogProps {
     open: boolean;
-    onOpenChange: (open: boolean) => void;
-    actionType: ActionType;
+    onClose: () => void;
+    actionType: "edit" | "delete";
     postId: number;
     originalContent?: string;
-    onAction: (
-        postId: number,
-        actionType: ActionType,
-        data: { content?: string; password: string }
-    ) => void;
+    onSubmit: (data: { content?: string; password: string }) => void;
 }
 
 /**
- * 방명록 수정/삭제 액션을 처리하는 다이얼로그 컴포넌트입니다.
+ * 방명록 수정 및 삭제 액션을 위한 다이얼로그 컴포넌트이다.
+ * actionType에 따라 수정 또는 삭제 입력 폼을 렌더링한다.
  */
 function GuestbookActionDialog({
     open,
-    onOpenChange,
+    onClose,
     actionType,
     postId,
     originalContent = "",
-    onAction,
+    onSubmit,
 }: GuestbookActionDialogProps) {
     const [content, setContent] = useState(originalContent);
     const [password, setPassword] = useState("");
 
-    // 다이얼로그가 열릴 때마다 clear
     useEffect(() => {
         if (open) {
             setContent(originalContent);
@@ -48,22 +42,17 @@ function GuestbookActionDialog({
         }
     }, [open, originalContent]);
 
-    // form 제출 핸들러
     const handleSubmit = useCallback(
         (e: React.FormEvent) => {
             e.preventDefault();
-
-            onAction(postId, actionType, {
+            onSubmit({
                 content: actionType === "edit" ? content : undefined,
                 password,
             });
-
-            onOpenChange(false);
         },
-        [postId, actionType, content, password, onAction, onOpenChange]
+        [actionType, content, password, onSubmit]
     );
 
-    // 비밀번호 입력 핸들러 메모이제이션
     const handlePasswordChange = useCallback(
         (e: React.ChangeEvent<HTMLInputElement>) => {
             setPassword(e.target.value);
@@ -71,7 +60,6 @@ function GuestbookActionDialog({
         []
     );
 
-    // 콘텐츠 입력 핸들러 메모이제이션
     const handleContentChange = useCallback(
         (e: React.ChangeEvent<HTMLTextAreaElement>) => {
             setContent(e.target.value);
@@ -80,7 +68,7 @@ function GuestbookActionDialog({
     );
 
     return (
-        <Dialog open={open} onOpenChange={onOpenChange}>
+        <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
                     <DialogTitle>
