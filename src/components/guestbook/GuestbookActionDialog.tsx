@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, memo } from "react";
 import {
     Dialog,
     DialogContent,
@@ -11,7 +11,7 @@ import { Textarea } from "../ui/textarea";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 
-type ActionType = "edit" | "delete";
+type ActionType = "edit" | "delete" | null; // type safety를 위해 null을 추가
 
 interface GuestbookActionDialogProps {
     open: boolean;
@@ -48,17 +48,36 @@ function GuestbookActionDialog({
         }
     }, [open, originalContent]);
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
+    // form 제출 핸들러
+    const handleSubmit = useCallback(
+        (e: React.FormEvent) => {
+            e.preventDefault();
 
-        if (actionType === "edit") {
-            onAction(postId, actionType, { content, password });
-        } else {
-            onAction(postId, actionType, { password });
-        }
+            onAction(postId, actionType, {
+                content: actionType === "edit" ? content : undefined,
+                password,
+            });
 
-        onOpenChange(false);
-    };
+            onOpenChange(false);
+        },
+        [postId, actionType, content, password, onAction, onOpenChange]
+    );
+
+    // 비밀번호 입력 핸들러 메모이제이션
+    const handlePasswordChange = useCallback(
+        (e: React.ChangeEvent<HTMLInputElement>) => {
+            setPassword(e.target.value);
+        },
+        []
+    );
+
+    // 콘텐츠 입력 핸들러 메모이제이션
+    const handleContentChange = useCallback(
+        (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+            setContent(e.target.value);
+        },
+        []
+    );
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
@@ -77,7 +96,7 @@ function GuestbookActionDialog({
                     {actionType === "edit" && (
                         <Textarea
                             value={content}
-                            onChange={(e) => setContent(e.target.value)}
+                            onChange={handleContentChange}
                             placeholder="수정할 내용을 입력하세요."
                             className="w-full"
                         />
@@ -85,7 +104,7 @@ function GuestbookActionDialog({
                     <Input
                         type="password"
                         value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        onChange={handlePasswordChange}
                         placeholder="비밀번호를 입력하세요."
                         className="w-full"
                     />
@@ -107,4 +126,4 @@ function GuestbookActionDialog({
     );
 }
 
-export default GuestbookActionDialog;
+export default memo(GuestbookActionDialog);

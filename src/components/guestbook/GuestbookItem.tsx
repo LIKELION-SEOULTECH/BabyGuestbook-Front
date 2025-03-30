@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback, useMemo, memo } from "react";
 import { MessageSquare, Play } from "lucide-react";
 import {
     ContextMenu,
@@ -22,8 +22,7 @@ export interface GuestbookItemProps {
     onDelete?: (postId: number, password: string) => void;
 }
 
-// Dialog 액션 타입
-type ActionType = "edit" | "delete";
+type ActionType = "edit" | "delete" | null;
 
 /**
  * 방명록 단일 아이템 뷰 입니다.
@@ -53,27 +52,53 @@ function GuestbookItem({
     onEdit,
     onDelete,
 }: GuestbookItemProps) {
-    const emotionConfig = emotionConfigs[emotion];
+    const emotionConfig = useMemo(() => emotionConfigs[emotion], [emotion]);
 
-    const [actionDialogOpen, setActionDialogOpen] = useState(false);
-    const [activeAction, setActiveAction] = useState<ActionType | null>(null);
+    const [activeAction, setActiveAction] = useState<ActionType>(null);
 
-    const openActionDialog = (action: ActionType) => {
+    // 다이얼로그가 열려있는지
+    const isDialogOpen = activeAction !== null;
+
+    // dialog opener
+    const openActionDialog = useCallback((action: "edit" | "delete") => {
         setActiveAction(action);
-        setActionDialogOpen(true);
-    };
+    }, []);
 
-    const handleAction = (
-        postId: number,
-        actionType: ActionType,
-        data: { content?: string; password: string }
-    ) => {
-        if (actionType === "edit" && onEdit && data.content) {
-            onEdit(postId, data.content, data.password);
-        } else if (actionType === "delete" && onDelete) {
-            onDelete(postId, data.password);
-        }
-    };
+    // dialog open sate 변경 핸들러
+    const handleDialogChange = useCallback((open: boolean) => {
+        if (!open) setActiveAction(null);
+    }, []);
+
+    // dialog handler - 수정 삭제 발생 시 trigger
+    const handleAction = useCallback(
+        (
+            actionPostId: number,
+            actionType: ActionType,
+            data: { content?: string; password: string }
+        ) => {
+            if (actionType === "edit" && onEdit && data.content) {
+                onEdit(actionPostId, data.content, data.password);
+            } else if (actionType === "delete" && onDelete) {
+                onDelete(actionPostId, data.password);
+            }
+        },
+        [onEdit, onDelete]
+    );
+
+    // event handlers
+    const handleEditSelect = useCallback(
+        (e: Event) => {
+            openActionDialog("edit");
+        },
+        [openActionDialog]
+    );
+
+    const handleDeleteSelect = useCallback(
+        (e: Event) => {
+            openActionDialog("delete");
+        },
+        [openActionDialog]
+    );
 
     return (
         <>
@@ -132,40 +157,30 @@ function GuestbookItem({
                 </ContextMenuTrigger>
 
                 <ContextMenuContent>
-                    <ContextMenuItem
-                        onSelect={(e) => {
-                            openActionDialog("edit");
-                        }}
-                    >
+                    <ContextMenuItem onSelect={handleEditSelect}>
                         수정하기
                     </ContextMenuItem>
 
                     <ContextMenuItem
                         variant="destructive"
-                        onSelect={(e) => {
-                            openActionDialog("delete");
-                        }}
+                        onSelect={handleDeleteSelect}
                     >
                         삭제하기
                     </ContextMenuItem>
                 </ContextMenuContent>
             </ContextMenu>
 
-            {/* 액션 다이얼로그 */}
-            {activeAction && (
-                <GuestbookActionDialog
-                    open={actionDialogOpen}
-                    onOpenChange={(open) => {
-                        setActionDialogOpen(open);
-                    }}
-                    actionType={activeAction}
-                    postId={postId}
-                    originalContent={content}
-                    onAction={handleAction}
-                />
-            )}
+            {/* 액션 다이얼로그 - 항상 렌더링되지만 open 상태로 제어 */}
+            <GuestbookActionDialog
+                open={isDialogOpen}
+                onOpenChange={handleDialogChange}
+                actionType={activeAction || "edit"}
+                postId={postId}
+                originalContent={content}
+                onAction={handleAction}
+            />
         </>
     );
 }
 
-export default GuestbookItem;
+export default memo(GuestbookItem);
