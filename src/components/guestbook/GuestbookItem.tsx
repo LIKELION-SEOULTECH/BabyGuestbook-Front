@@ -6,19 +6,8 @@ import {
     ContextMenuItem,
     ContextMenuTrigger,
 } from "../ui/context-menu";
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "../ui/dialog";
-import { Textarea } from "../ui/textarea";
 import { emotionConfigs, EmotionConfig } from "@/constants/emotion";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
+import GuestbookActionDialog from "./GuestbookActionDialog";
 
 export interface GuestbookItemProps {
     postId: number;
@@ -29,7 +18,12 @@ export interface GuestbookItemProps {
     emotion: EmotionConfig["key"];
     onCommentClick?: () => void;
     onPlaylistClick?: () => void;
+    onEdit?: (postId: number, content: string, password: string) => void;
+    onDelete?: (postId: number, password: string) => void;
 }
+
+// Dialog 액션 타입
+type ActionType = "edit" | "delete";
 
 /**
  * 방명록 단일 아이템 뷰 입니다.
@@ -43,6 +37,8 @@ export interface GuestbookItemProps {
  * @param emotion - 감정 key로서, emotionConfigs에서 구현된 감정별 value를 가져오는 데 사용됩니다.
  * @param onCommentClick - 댓글 버튼 클릭 이벤트 핸들러
  * @param onPlaylistClick - 플레이리스트 버튼 클릭 이벤트 핸들러
+ * @param onEdit - 방명록 수정 이벤트 핸들러
+ * @param onDelete - 방명록 삭제 이벤트 핸들러
  * @returns React.ReactElement
  */
 function GuestbookItem({
@@ -54,163 +50,121 @@ function GuestbookItem({
     emotion,
     onCommentClick,
     onPlaylistClick,
+    onEdit,
+    onDelete,
 }: GuestbookItemProps) {
     const emotionConfig = emotionConfigs[emotion];
-    const [editContent, setEditContent] = useState(content);
-    const [editPassword, setEditPassword] = useState("");
 
-    const handleEditSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
+    const [actionDialogOpen, setActionDialogOpen] = useState(false);
+    const [activeAction, setActiveAction] = useState<ActionType | null>(null);
 
-        console.log("방명록 수정 제출", { postId, editContent, editPassword });
+    const openActionDialog = (action: ActionType) => {
+        setActiveAction(action);
+        setActionDialogOpen(true);
     };
 
-    const handleDeleteSubmit = (e: React.FormEvent, password: string) => {
-        e.preventDefault();
-
-        console.log("방명록 삭제 제출", { postId, password });
+    const handleAction = (
+        postId: number,
+        actionType: ActionType,
+        data: { content?: string; password: string }
+    ) => {
+        if (actionType === "edit" && onEdit && data.content) {
+            onEdit(postId, data.content, data.password);
+        } else if (actionType === "delete" && onDelete) {
+            onDelete(postId, data.password);
+        }
     };
 
     return (
-        <ContextMenu>
-            <ContextMenuTrigger>
-                <div className="flex flex-col items-start gap-4">
-                    {/* Top - 작성자 및 작성 시간 */}
-                    <div className="flex items-center gap-2 text-secondary text-sm leading-none tracking-tight">
-                        <span>{author}</span>
-                        <span className="w-0.5 h-0.5 bg-secondary rounded-full" />
-                        <span>{time}</span>
-                    </div>
-
-                    {/* Body - 방명록 내용 */}
-                    <p className="text-xl leading-normal tracking-tight">
-                        {content}
-                    </p>
-
-                    {/* Bottom - 댓글 버튼 및 플레이리스트 버튼 */}
-                    <div className="w-full pt-2 flex items-center gap-4">
-                        {/* 댓글 버튼 및 댓글 수 */}
-                        <div
-                            onClick={onCommentClick}
-                            className="flex items-center gap-1 text-secondary text-xs cursor-pointer transition-transform duration-150 ease-in-out hover:scale-103 active:scale-97"
-                        >
-                            <MessageSquare
-                                strokeWidth={1}
-                                size={16}
-                                className="rotate-y-180"
-                            />
-                            <span>{commentCount}</span>
+        <>
+            <ContextMenu>
+                <ContextMenuTrigger>
+                    <div className="flex flex-col items-start gap-4">
+                        {/* Top - 작성자 및 작성 시간 */}
+                        <div className="flex items-center gap-2 text-secondary text-sm leading-none tracking-tight">
+                            <span>{author}</span>
+                            <span className="w-0.5 h-0.5 bg-secondary rounded-full" />
+                            <span>{time}</span>
                         </div>
 
-                        {/* 감정 플레이리스트 버튼 */}
-                        <div
-                            onClick={onPlaylistClick}
-                            className="flex items-center rounded-sm cursor-pointer transition-transform duration-150 ease-in-out hover:scale-103 active:scale-97"
-                        >
-                            <div className="flex items-center space-x-1">
-                                <span
-                                    className="text-sm leading-none tracking-tight"
-                                    style={{ color: emotionConfig.color }}
-                                >
-                                    {emotionConfig.playlistButtonTextPreColored}
-                                </span>
-                                <span className="text-sm leading-none tracking-tight">
-                                    {emotionConfig.playlistButtonTextPost}
-                                </span>
+                        {/* Body - 방명록 내용 */}
+                        <p className="text-xl leading-normal tracking-tight">
+                            {content}
+                        </p>
+
+                        {/* Bottom - 댓글 버튼 및 플레이리스트 버튼 */}
+                        <div className="w-full pt-2 flex items-center gap-4">
+                            {/* 댓글 버튼 및 댓글 수 */}
+                            <div
+                                onClick={onCommentClick}
+                                className="flex items-center gap-1 text-secondary text-xs cursor-pointer transition-transform duration-150 ease-in-out hover:scale-103 active:scale-97"
+                            >
+                                <MessageSquare
+                                    strokeWidth={1}
+                                    size={16}
+                                    className="rotate-y-180"
+                                />
+                                <span>{commentCount}</span>
                             </div>
-                            <Play size={12} className="ml-1" />
+
+                            {/* 감정 플레이리스트 버튼 */}
+                            <div
+                                onClick={onPlaylistClick}
+                                className="flex items-center rounded-sm cursor-pointer transition-transform duration-150 ease-in-out hover:scale-103 active:scale-97"
+                            >
+                                <div className="flex items-center space-x-1">
+                                    <span
+                                        className="text-sm leading-none tracking-tight"
+                                        style={{ color: emotionConfig.color }}
+                                    >
+                                        {
+                                            emotionConfig.playlistButtonTextPreColored
+                                        }
+                                    </span>
+                                    <span className="text-sm leading-none tracking-tight">
+                                        {emotionConfig.playlistButtonTextPost}
+                                    </span>
+                                </div>
+                                <Play size={12} className="ml-1" />
+                            </div>
                         </div>
                     </div>
-                </div>
-            </ContextMenuTrigger>
-            <ContextMenuContent>
-                {/* 수정하기 Dialog */}
-                <Dialog>
-                    <DialogTrigger asChild>
-                        <ContextMenuItem className="cursor-pointer">
-                            수정하기
-                        </ContextMenuItem>
-                    </DialogTrigger>
-                    <DialogContent>
-                        <DialogHeader>
-                            <DialogTitle>방명록 수정</DialogTitle>
-                            <DialogDescription>
-                                방명록 내용을 수정하고, 비밀번호를 입력해 본인
-                                인증을 진행한다.
-                            </DialogDescription>
-                        </DialogHeader>
-                        <form
-                            onSubmit={handleEditSubmit}
-                            className="flex flex-col gap-4"
-                        >
-                            <Textarea
-                                value={editContent}
-                                onChange={(e) => setEditContent(e.target.value)}
-                                placeholder="수정할 내용을 입력하세요."
-                                className="w-full"
-                            />
-                            <Input
-                                type="password"
-                                value={editPassword}
-                                onChange={(e) =>
-                                    setEditPassword(e.target.value)
-                                }
-                                placeholder="비밀번호를 입력하세요."
-                                className="w-full"
-                            />
-                            <DialogFooter>
-                                <Button type="submit">수정 완료</Button>
-                            </DialogFooter>
-                        </form>
-                    </DialogContent>
-                </Dialog>
+                </ContextMenuTrigger>
 
-                {/* 삭제하기 Dialog */}
-                <Dialog>
-                    <DialogTrigger asChild>
-                        <ContextMenuItem
-                            variant="destructive"
-                            className="cursor-pointer"
-                        >
-                            삭제하기
-                        </ContextMenuItem>
-                    </DialogTrigger>
-                    <DialogContent>
-                        <DialogHeader>
-                            <DialogTitle>삭제 확인</DialogTitle>
-                            <DialogDescription>
-                                방명록 삭제를 위해 비밀번호를 입력해 본인 인증을
-                                진행한다.
-                            </DialogDescription>
-                        </DialogHeader>
-                        <form
-                            onSubmit={(e) =>
-                                handleDeleteSubmit(
-                                    e,
-                                    (
-                                        e.currentTarget
-                                            .password as HTMLInputElement
-                                    ).value
-                                )
-                            }
-                            className="flex flex-col gap-4"
-                        >
-                            <Input
-                                name="password"
-                                type="password"
-                                placeholder="비밀번호를 입력하세요."
-                                className="w-full"
-                            />
-                            <DialogFooter>
-                                <Button type="submit" variant="destructive">
-                                    삭제하기
-                                </Button>
-                            </DialogFooter>
-                        </form>
-                    </DialogContent>
-                </Dialog>
-            </ContextMenuContent>
-        </ContextMenu>
+                <ContextMenuContent>
+                    <ContextMenuItem
+                        onSelect={(e) => {
+                            openActionDialog("edit");
+                        }}
+                    >
+                        수정하기
+                    </ContextMenuItem>
+
+                    <ContextMenuItem
+                        variant="destructive"
+                        onSelect={(e) => {
+                            openActionDialog("delete");
+                        }}
+                    >
+                        삭제하기
+                    </ContextMenuItem>
+                </ContextMenuContent>
+            </ContextMenu>
+
+            {/* 액션 다이얼로그 */}
+            {activeAction && (
+                <GuestbookActionDialog
+                    open={actionDialogOpen}
+                    onOpenChange={(open) => {
+                        setActionDialogOpen(open);
+                    }}
+                    actionType={activeAction}
+                    postId={postId}
+                    originalContent={content}
+                    onAction={handleAction}
+                />
+            )}
+        </>
     );
 }
 
