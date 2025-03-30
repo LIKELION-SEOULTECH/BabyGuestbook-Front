@@ -1,8 +1,9 @@
 import GuestbookList from "./components/guestbook/GuestbookList";
 import GuestbookTopbar from "./components/guestbook/GuestbookTopbar";
 import Header from "./components/layout/Header";
-import { mockGuestbookItems } from "./constants/mockData";
+import { Toaster } from "./components/ui/sonner";
 import MiniplayerMock from "./components/player/MiniPlayer";
+import { mockGuestbookItems } from "./constants/mockData";
 
 function App() {
     return (
@@ -12,7 +13,25 @@ function App() {
             <div className="mt-16 flex flex-col gap-8">
                 <GuestbookTopbar />
 
-                <GuestbookList items={mockGuestbookItems} />
+                <GuestbookList
+                    items={mockGuestbookItems}
+                    onItemUpdated={(updatedGuestbooks) => {
+                        console.log("Updated guestbooks:", updatedGuestbooks);
+                    }}
+                    onCommentClick={(postId) => {
+                        console.log("Comment clicked for postId:", postId);
+                    }}
+                    onPlaylistClick={(postId, emotion) => {
+                        console.log(
+                            "Playlist clicked for postId:",
+                            postId,
+                            "with emotion:",
+                            emotion
+                        );
+                    }}
+                />
+
+                <Toaster position="top-right" />
 
                 <MiniplayerMock />
             </div>
