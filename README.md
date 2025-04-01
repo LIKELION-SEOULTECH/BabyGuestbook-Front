@@ -2,6 +2,7 @@
 
 **멋쟁이사자처럼 Team 1 - 아기사자를 위한 방명록 프로젝트**
 
+![test-badge](https://github.com/LIKELION-SEOULTECH/BabyGuestbook-Front/actions/workflows/test.yml/badge.svg)
 
 ## ✨ Preview
 
