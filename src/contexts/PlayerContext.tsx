@@ -21,7 +21,9 @@ export interface PlayerContextType {
     curatePlaylistByEmotion: (emotion: keyof typeof emotionConfigs) => void;
 }
 
-const PlayerContext = createContext<PlayerContextType | undefined>(undefined);
+export const PlayerContext = createContext<PlayerContextType | undefined>(
+    undefined
+);
 
 export const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
     const [currentVideo, setCurrentVideo] =
