@@ -1,5 +1,6 @@
-import { emotionConfigs } from "@/constants/emotion";
 import React, { createContext, useContext, useState, useMemo } from "react";
+import { emotionConfigs } from "@/constants/emotion";
+import { emotionVideoMapping } from "@/constants/emotionVideos";
 
 export interface Video {
     id: string;
@@ -29,17 +30,6 @@ export const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
     const [isMiniPlayerVisible, setIsMiniPlayerVisible] =
         useState<boolean>(false);
     const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
-
-    // 임시!
-    const emotionVideoMapping: Record<keyof typeof emotionConfigs, string[]> = {
-        happy: ["X1Yv9DPhIdM"],
-        sad: ["hAAixJ8lux8"],
-        angry: ["7ID5N1dvcNk"],
-        surprised: ["wI00QO2A2j4"],
-        fear: ["dcDmiUuQb6o"],
-        calm: ["4eheUvD7tfg"],
-        uncomfortable: ["UdUkMDCdG58"],
-    };
 
     const curatePlaylistByEmotion = (emotion: keyof typeof emotionConfigs) => {
         const videoIds = emotionVideoMapping[emotion];
