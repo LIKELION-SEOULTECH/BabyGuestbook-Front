@@ -1,6 +1,6 @@
 import { memo } from "react";
 import GuestbookItem from "./GuestbookItem";
-import { PostDTO } from "@/api/post";
+import { PostDTO } from "@/types/post";
 
 export interface GuestbookListProps {
     items: PostDTO[];

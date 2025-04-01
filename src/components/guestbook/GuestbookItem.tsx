@@ -10,7 +10,7 @@ import GuestbookActionDialog from "./GuestbookActionDialog";
 
 import useGuestbookAction from "@/hooks/guestbook/useGuestbookAction";
 import { emotionConfigs } from "@/constants/emotion";
-import { PostDTO } from "@/api/post";
+import { PostDTO } from "@/types/post";
 import { formatRelativeDate } from "@/lib/formatRelativeDate";
 
 export interface GuestbookItemProps extends PostDTO {
