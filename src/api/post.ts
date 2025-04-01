@@ -20,7 +20,7 @@ interface ApiResponse<T> {
 export const fetchPosts = async (
     params: Omit<ReadPostParameter, "lastPostId">
 ): Promise<PostResponse> => {
-    const response = await client.get<PostResponse>("/api/v1/posts", {
+    const response = await client.get<PostResponse>("/posts", {
         params,
     });
     return response.data;
@@ -30,7 +30,7 @@ export const fetchPosts = async (
 export const fetchInfinitePosts = async (
     params: ReadPostParameter
 ): Promise<PostResponse> => {
-    const response = await client.get<PostResponse>("/api/v1/posts", {
+    const response = await client.get<PostResponse>("/posts", {
         params,
     });
     return response.data;
@@ -41,7 +41,7 @@ export const createPost = async (
     body: CreatePostRequest
 ): Promise<ApiResponse<PostDTO>> => {
     const response = await client.post<ApiResponse<PostDTO>>(
-        "/api/v1/posts/post",
+        "/posts/post",
         body
     );
     return response.data;
@@ -53,7 +53,7 @@ export const updatePost = async (
     body: UpdatePostRequest
 ): Promise<ApiResponse<PostDTO>> => {
     const response = await client.patch<ApiResponse<PostDTO>>(
-        `/api/v1/posts/${postId}`,
+        `/posts/${postId}`,
         body
     );
     return response.data;
@@ -65,7 +65,7 @@ export const deletePost = async (
     body: DeletePostRequest
 ): Promise<ApiResponse<null>> => {
     const response = await client.delete<ApiResponse<null>>(
-        `/api/v1/posts/${postId}`,
+        `/posts/${postId}`,
         {
             params: {
                 password: body.password,
