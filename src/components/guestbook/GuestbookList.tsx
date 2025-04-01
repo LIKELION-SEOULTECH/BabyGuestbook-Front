@@ -8,7 +8,6 @@ export interface GuestbookListProps {
     onDelete: (postId: number, password: string) => void;
     onCommentClick: (postId: number) => void;
     onPlaylistClick: (
-        postId: number,
         emotion: keyof typeof import("@/constants/emotion").emotionConfigs
     ) => void;
 }
@@ -46,9 +45,7 @@ function GuestbookList({
                     onEdit={onEdit}
                     onDelete={onDelete}
                     onCommentClick={() => onCommentClick(item.postId)}
-                    onPlaylistClick={() =>
-                        onPlaylistClick(item.postId, item.emotion)
-                    }
+                    onPlaylistClick={() => onPlaylistClick(item.emotion)}
                 />
             ))}
         </div>

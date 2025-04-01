@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback, Suspense, useRef } from "react";
+import React, { useMemo, useCallback, Suspense, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
 import { Slider } from "@/components/ui/slider";
@@ -12,32 +12,20 @@ import {
     Link,
 } from "lucide-react";
 import YouTubePlayer, { YouTubePlayerHandles } from "./YouTubePlayer";
+import { usePlayer } from "@/contexts/PlayerContext";
 
-interface Video {
-    id: string;
-    title: string;
-}
+function MiniPlayer() {
+    const {
+        currentVideo,
+        isPlaying,
+        setIsPlaying,
+        volume,
+        setVolume,
+        isDrawerOpen,
+        setIsDrawerOpen,
+    } = usePlayer();
 
-interface MiniPlayerProps {
-    currentVideo: Video;
-    isPlaying: boolean;
-    setIsPlaying: React.Dispatch<React.SetStateAction<boolean>>;
-    volume: number[];
-    setVolume: React.Dispatch<React.SetStateAction<number[]>>;
-    isDrawerOpen: boolean;
-    setIsDrawerOpen: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-function MiniPlayer({
-    currentVideo,
-    isPlaying,
-    setIsPlaying,
-    volume,
-    setVolume,
-    isDrawerOpen,
-    setIsDrawerOpen,
-}: MiniPlayerProps) {
-    const [isPlayerVisible, setIsPlayerVisible] = useState(true);
+    const [isPlayerVisible, setIsPlayerVisible] = React.useState(true);
     const videoPlayerRef = useRef<YouTubePlayerHandles>(null);
 
     const handleToggleDrawer = useCallback(() => {
@@ -45,23 +33,23 @@ function MiniPlayer({
     }, [setIsDrawerOpen]);
 
     const handlePlayPause = useCallback(
-        (e: React.MouseEvent) => {
-            e.stopPropagation();
+        (event: React.MouseEvent) => {
+            event.stopPropagation();
             setIsPlaying((prev) => !prev);
         },
         [setIsPlaying]
     );
 
     const handleVolumeChange = useCallback(
-        (value: number[]) => {
-            setVolume(value);
+        (newVolume: number[]) => {
+            setVolume(newVolume);
         },
         [setVolume]
     );
 
-    const handleClose = useCallback(
-        (e: React.MouseEvent) => {
-            e.stopPropagation();
+    const handleClosePlayer = useCallback(
+        (event: React.MouseEvent) => {
+            event.stopPropagation();
             setIsPlaying(false);
             setIsPlayerVisible(false);
         },
@@ -69,8 +57,8 @@ function MiniPlayer({
     );
 
     const handleYouTubeLink = useCallback(
-        (e: React.MouseEvent) => {
-            e.stopPropagation();
+        (event: React.MouseEvent) => {
+            event.stopPropagation();
             if (currentVideo?.id) {
                 window.open(
                     `https://www.youtube.com/watch?v=${currentVideo.id}`,
@@ -162,13 +150,13 @@ function MiniPlayer({
                                     step={1}
                                     className="w-24"
                                     onValueChange={handleVolumeChange}
-                                    onClick={(e) => e.stopPropagation()}
+                                    onClick={(event) => event.stopPropagation()}
                                 />
                             </div>
                             <Button
                                 variant="ghost"
                                 size="sm"
-                                onClick={handleClose}
+                                onClick={handleClosePlayer}
                                 title="플레이어 닫기"
                             >
                                 <X size={18} />
@@ -188,21 +176,16 @@ function MiniPlayer({
                                 className="object-cover w-full h-full"
                             />
                         </div>
-
-                        {/* Title  */}
-
                         <h4 className="mb-4">
                             {currentVideo?.title || "비디오 제목"}
                         </h4>
-
-                        {/* Controls ⏯️ */}
                         <div className="flex flex-col items-center space-y-4 w-80">
                             <div className="flex items-center justify-between w-40">
                                 <Button
                                     variant="ghost"
                                     size="sm"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
+                                    onClick={(event) => {
+                                        event.stopPropagation();
                                         videoPlayerRef.current?.skipBackward();
                                     }}
                                 >
@@ -222,16 +205,14 @@ function MiniPlayer({
                                 <Button
                                     variant="ghost"
                                     size="sm"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
+                                    onClick={(event) => {
+                                        event.stopPropagation();
                                         videoPlayerRef.current?.skipForward();
                                     }}
                                 >
                                     <RotateCw size={16} />
                                 </Button>
                             </div>
-
-                            {/* Volume 🔈 */}
                             <div className="flex items-center w-full">
                                 <Volume2 size={16} />
                                 <Slider
@@ -242,8 +223,6 @@ function MiniPlayer({
                                     onValueChange={handleVolumeChange}
                                 />
                             </div>
-
-                            {/* YT Link 🔗 */}
                             <Button
                                 variant="ghost"
                                 className="w-full mt-2"
@@ -260,30 +239,4 @@ function MiniPlayer({
     );
 }
 
-function MiniPlayerMock() {
-    const [isPlaying, setIsPlaying] = useState(false);
-    const [volume, setVolume] = useState([70]);
-    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
-    const currentVideo = useMemo<Video>(
-        () => ({
-            id: "J4p2XZ9uCLs",
-            title: "테스트 비디오",
-        }),
-        []
-    );
-
-    return (
-        <MiniPlayer
-            currentVideo={currentVideo}
-            isPlaying={isPlaying}
-            setIsPlaying={setIsPlaying}
-            volume={volume}
-            setVolume={setVolume}
-            isDrawerOpen={isDrawerOpen}
-            setIsDrawerOpen={setIsDrawerOpen}
-        />
-    );
-}
-
-export default MiniPlayerMock;
+export default MiniPlayer;
