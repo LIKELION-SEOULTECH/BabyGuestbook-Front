@@ -1,15 +1,15 @@
 import React, { createContext, useContext, useState, useMemo } from "react";
 import { emotionConfigs } from "@/constants/emotion";
-import { emotionVideoMapping } from "@/constants/emotionVideos";
-
-export interface Video {
-    id: string;
-    title: string;
-}
+import {
+    emotionVideoMapping,
+    VideoEntryWithEmotion,
+} from "@/constants/emotionVideos";
 
 export interface PlayerContextType {
-    currentVideo: Video | null;
-    setCurrentVideo: React.Dispatch<React.SetStateAction<Video | null>>;
+    currentVideo: VideoEntryWithEmotion | null;
+    setCurrentVideo: React.Dispatch<
+        React.SetStateAction<VideoEntryWithEmotion | null>
+    >;
     isPlaying: boolean;
     setIsPlaying: React.Dispatch<React.SetStateAction<boolean>>;
     volume: number[];
@@ -24,7 +24,8 @@ export interface PlayerContextType {
 const PlayerContext = createContext<PlayerContextType | undefined>(undefined);
 
 export const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
-    const [currentVideo, setCurrentVideo] = useState<Video | null>(null);
+    const [currentVideo, setCurrentVideo] =
+        useState<VideoEntryWithEmotion | null>(null);
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
     const [volume, setVolume] = useState<number[]>([70]);
     const [isMiniPlayerVisible, setIsMiniPlayerVisible] =
@@ -40,10 +41,11 @@ export const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
 
         // Suffle
         const shuffledVideoIds = [...videoIds].sort(() => Math.random() - 0.5);
-        const curatedPlaylist: Video[] = shuffledVideoIds.map(
-            (videoId, index) => ({
-                id: videoId,
-                title: `${emotion} Video ${index + 1}`,
+        const curatedPlaylist: VideoEntryWithEmotion[] = shuffledVideoIds.map(
+            (video) => ({
+                id: video.id,
+                title: video.title,
+                emotion,
             })
         );
 

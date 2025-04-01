@@ -129,7 +129,7 @@ function MiniPlayer() {
                                                 "비디오 제목"}
                                         </h4>
                                         <p className="text-xs text-muted-foreground">
-                                            ~~감정에 어울리는 음악
+                                            {currentVideo?.emotion}
                                         </p>
                                     </div>
                                 </div>
