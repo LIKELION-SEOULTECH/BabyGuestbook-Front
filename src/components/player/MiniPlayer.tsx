@@ -116,6 +116,7 @@ function MiniPlayer() {
                                         variant="ghost"
                                         size="sm"
                                         onClick={handlePlayPause}
+                                        title={isPlaying ? "일시정지" : "재생"}
                                     >
                                         {isPlaying ? (
                                             <Pause size={20} />
@@ -145,6 +146,7 @@ function MiniPlayer() {
                                             onClick={(event) =>
                                                 event.stopPropagation()
                                             }
+                                            role="volume-slider"
                                         />
                                     </div>
                                     <Button
@@ -218,6 +220,7 @@ function MiniPlayer() {
                                             step={1}
                                             className="ml-2"
                                             onValueChange={handleVolumeChange}
+                                            role="drawer-volume-slider"
                                         />
                                     </div>
                                     <Button
