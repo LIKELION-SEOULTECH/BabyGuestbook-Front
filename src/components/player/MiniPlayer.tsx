@@ -21,11 +21,11 @@ function MiniPlayer() {
         setIsPlaying,
         volume,
         setVolume,
+        isMiniPlayerVisible,
+        setIsMiniPlayerVisible,
         isDrawerOpen,
         setIsDrawerOpen,
     } = usePlayer();
-
-    const [isPlayerVisible, setIsPlayerVisible] = React.useState(true);
     const videoPlayerRef = useRef<YouTubePlayerHandles>(null);
 
     const handleToggleDrawer = useCallback(() => {
@@ -51,7 +51,7 @@ function MiniPlayer() {
         (event: React.MouseEvent) => {
             event.stopPropagation();
             setIsPlaying(false);
-            setIsPlayerVisible(false);
+            setIsMiniPlayerVisible(false);
         },
         [setIsPlaying]
     );
@@ -69,10 +69,6 @@ function MiniPlayer() {
         [currentVideo]
     );
 
-    const handleShowPlayer = useCallback(() => {
-        setIsPlayerVisible(true);
-    }, []);
-
     const videoPlayer = useMemo(() => {
         if (!currentVideo) return null;
         return (
@@ -87,19 +83,8 @@ function MiniPlayer() {
         );
     }, [currentVideo, isPlaying, volume]);
 
-    if (!isPlayerVisible) {
-        return (
-            <div className="fixed z-20 bottom-4 right-4">
-                <Button
-                    variant="secondary"
-                    size="sm"
-                    className="rounded-full shadow-lg"
-                    onClick={handleShowPlayer}
-                >
-                    <Play size={20} />
-                </Button>
-            </div>
-        );
+    if (!isMiniPlayerVisible) {
+        return null;
     }
 
     return (

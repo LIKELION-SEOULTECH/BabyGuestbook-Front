@@ -13,10 +13,10 @@ export interface PlayerContextType {
     setIsPlaying: React.Dispatch<React.SetStateAction<boolean>>;
     volume: number[];
     setVolume: React.Dispatch<React.SetStateAction<number[]>>;
+    isMiniPlayerVisible: boolean;
+    setIsMiniPlayerVisible: React.Dispatch<React.SetStateAction<boolean>>;
     isDrawerOpen: boolean;
     setIsDrawerOpen: React.Dispatch<React.SetStateAction<boolean>>;
-    videoPlaylist: Video[];
-    setVideoPlaylist: React.Dispatch<React.SetStateAction<Video[]>>;
     curatePlaylistByEmotion: (emotion: keyof typeof emotionConfigs) => void;
 }
 
@@ -26,8 +26,9 @@ export const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
     const [currentVideo, setCurrentVideo] = useState<Video | null>(null);
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
     const [volume, setVolume] = useState<number[]>([70]);
+    const [isMiniPlayerVisible, setIsMiniPlayerVisible] =
+        useState<boolean>(false);
     const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
-    const [videoPlaylist, setVideoPlaylist] = useState<Video[]>([]);
 
     // 임시!
     const emotionVideoMapping: Record<keyof typeof emotionConfigs, string[]> = {
@@ -56,7 +57,7 @@ export const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
             })
         );
 
-        setVideoPlaylist(curatedPlaylist);
+        setIsMiniPlayerVisible(true);
         setCurrentVideo(curatedPlaylist[0]);
         setIsPlaying(true);
     };
@@ -69,13 +70,13 @@ export const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
             setIsPlaying,
             volume,
             setVolume,
+            isMiniPlayerVisible,
+            setIsMiniPlayerVisible,
             isDrawerOpen,
             setIsDrawerOpen,
-            videoPlaylist,
-            setVideoPlaylist,
             curatePlaylistByEmotion,
         }),
-        [currentVideo, isPlaying, volume, isDrawerOpen, videoPlaylist]
+        [currentVideo, isPlaying, volume, isMiniPlayerVisible, isDrawerOpen]
     );
 
     return (
