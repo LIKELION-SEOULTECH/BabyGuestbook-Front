@@ -25,6 +25,6 @@ npm run test
 
 ### 3. Docker 빌드 & 실행
 ```bash
-docker-compose up --build
+docker compose up --build
 ```
 
