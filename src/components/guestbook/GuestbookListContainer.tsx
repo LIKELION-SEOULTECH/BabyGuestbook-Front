@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import GuestbookList from "./GuestbookList";
-import { PostDTO } from "@/api/post";
+import { PostDTO } from "@/types/post";
 
 export interface GuestbookListContainerProps {
     initialItems: PostDTO[];
