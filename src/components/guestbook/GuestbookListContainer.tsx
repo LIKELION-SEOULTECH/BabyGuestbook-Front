@@ -1,4 +1,3 @@
-// src/components/guestbook/GuestbookListContainer.tsx
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import GuestbookList from "./GuestbookList";
@@ -8,7 +7,6 @@ export interface GuestbookListContainerProps {
     initialItems: PostDTO[];
     onCommentClick?: (postId: number) => void;
     onPlaylistClick?: (
-        postId: number,
         emotion: keyof typeof import("@/constants/emotion").emotionConfigs
     ) => void;
 }
