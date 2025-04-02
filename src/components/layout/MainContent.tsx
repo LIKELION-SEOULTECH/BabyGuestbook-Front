@@ -2,8 +2,7 @@ import { useRef, useState } from "react";
 import { usePlayer } from "@/contexts/PlayerContext";
 import { Emotion, Order } from "@/types/post";
 
-import GuestbookTopbar from "../guestbook/GuestbookTopbar";
-import GuestbookListContainer from "../guestbook/GuestbookListContainer";
+import GuestbookListContainer from "../guestbook/GuestbookListContainer"; // ✅ Topbar는 GuestbookListContainer 안에 있음
 import { Toaster } from "../ui/sonner";
 import MiniPlayer from "../player/MiniPlayer";
 import { usePostsQuery } from "@/queries/postQueries";
