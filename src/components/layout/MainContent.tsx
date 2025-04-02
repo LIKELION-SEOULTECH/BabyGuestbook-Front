@@ -7,6 +7,7 @@ import GuestbookListContainer from "../guestbook/GuestbookListContainer";
 import { Toaster } from "../ui/sonner";
 import MiniPlayer from "../player/MiniPlayer";
 import { usePostsQuery } from "@/queries/postQueries";
+import { LoadingSpinner } from "../ui/loading-spinner";
 
 function MainContent() {
     const { curatePlaylistByEmotion } = usePlayer();
@@ -36,8 +37,11 @@ function MainContent() {
             <GuestbookTopbar />
 
             {isLoading ? (
-                <div className="flex justify-center items-center h-40">
-                    loading ...
+                <div className="flex flex-col justify-center items-center h-40 gap-4">
+                    <LoadingSpinner className="text-secondary" />
+                    <span className="text-sm text-secondary">
+                        방명록을 불러오는 중입니다...
+                    </span>
                 </div>
             ) : (
                 <GuestbookListContainer
@@ -52,7 +56,7 @@ function MainContent() {
                 />
             )}
 
-            <Toaster position="top-right" />
+            <Toaster position="top-right" richColors />
 
             <MiniPlayer />
         </div>
