@@ -17,6 +17,14 @@
 npm install
 npm run dev
 ```
+> 📌 Note
+> dev 모드에서 mock api를 사용하려면 `.env`파일에 아래의 항목을 추가하세용
+>
+> ```bash
+> VITE_API_URL=http://localhost:5174
+> ```
+> 포트는 app이 로컬에서 실행되는 포트와 동일합니다.
+
 
 ### 2. 테스트
 ```bash
