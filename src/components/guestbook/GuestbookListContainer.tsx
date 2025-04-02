@@ -2,19 +2,23 @@ import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import GuestbookList from "./GuestbookList";
 import GuestbookTopbar from "./GuestbookTopbar";
-import { PostDTO } from "@/types/post";
+import { LoadingSpinner } from "../ui/loading-spinner";
+import { Emotion, Order } from "@/types/post";
 import { TempPost } from "@/types/tempPost";
 import {
     useUpdatePostMutation,
     useDeletePostMutation,
+    useCreatePostMutation,
+    usePostsQuery,
 } from "@/queries/postQueries";
 
 export interface GuestbookListContainerProps {
-  initialItems: PostDTO[];
-  onCommentClick?: (postId: number) => void;
-  onPlaylistClick?: (
-    emotion: keyof typeof import("@/constants/emotion").emotionConfigs
-  ) => void;
+    currentOrder: Order;
+    currentEmotion: Emotion | undefined;
+    onCommentClick?: (postId: number) => void;
+    onPlaylistClick?: (
+        emotion: keyof typeof import("@/constants/emotion").emotionConfigs
+    ) => void;
 }
 
 /**
@@ -22,37 +26,29 @@ export interface GuestbookListContainerProps {
  * API Call, state 관리 등 비즈니스 로직을 담당합니다.
  */
 function GuestbookListContainer({
-  initialItems,
-  onCommentClick,
-  onPlaylistClick,
+    currentOrder,
+    currentEmotion,
+    onCommentClick,
+    onPlaylistClick,
 }: GuestbookListContainerProps) {
-  const [guestbooks, setGuestbooks] = useState<PostDTO[]>(initialItems);
+    const { data, isLoading, isError, error, refetch } = usePostsQuery({
+        order: currentOrder,
+        emotion: currentEmotion,
+        pageSize: 10,
+    });
 
+    const createMutation = useCreatePostMutation();
     const updateMutation = useUpdatePostMutation();
     const deleteMutation = useDeletePostMutation();
-
-    useEffect(() => {
-        setGuestbooks(initialItems);
-    }, [initialItems]);
 
     const handleEdit = useCallback(
         async (postId: number, content: string, password: string) => {
             updateMutation.mutate(
                 { postId, content, password },
                 {
-                    onSuccess: () => {
-                        setGuestbooks((prev) =>
-                            prev.map((item) =>
-                                item.postId === postId
-                                    ? { ...item, content }
-                                    : item
-                            )
-                        );
-                        toast.success("성공적으로 수정되었습니다.");
-                    },
-                    onError: () => {
-                        toast.error("비밀번호가 일치하지 않습니다.");
-                    },
+                    onSuccess: () =>
+                        toast.success("성공적으로 수정되었습니다."),
+                    onError: () => toast.error("비밀번호가 일치하지 않습니다."),
                 }
             );
         },
@@ -64,52 +60,43 @@ function GuestbookListContainer({
             deleteMutation.mutate(
                 { postId, password },
                 {
-                    onSuccess: () => {
-                        setGuestbooks((prev) =>
-                            prev.filter((item) => item.postId !== postId)
-                        );
-                        toast.success("방명록이 삭제되었습니다.");
-                    },
-                    onError: () => {
-                        toast.error("비밀번호가 일치하지 않습니다.");
-                    },
+                    onSuccess: () => toast.success("방명록이 삭제되었습니다."),
+                    onError: () => toast.error("비밀번호가 일치하지 않습니다."),
                 }
             );
         },
         [deleteMutation]
     );
-    
-  /** ✅ 글쓰기 모달에서 전달된 새 글 추가 함수 */
-  const handleAddPost = (newPost: TempPost) => {
-    const { password, ...rest } = newPost;
 
-    const post: PostDTO = {
-      ...rest,
-      emotion: "HAPPY", // 추후 감정 선택 기능이 생기면 바꿔줄 수 있어요
-      user: {
-        userId: 0,
-        username: "익명",
-      },
-      updatedAt: new Date().toISOString(),
-      likeCnt: 0,
-      commentCnt: 0,
+    const handleAddPost = (newPost: TempPost) => {
+        createMutation.mutate(newPost, {
+            onSuccess: () => toast.success("방명록이 작성되었습니다."),
+            onError: () => toast.error("작성에 실패했습니다."),
+        });
     };
 
-    setGuestbooks((prev) => [post, ...prev]);
-  };
+    return (
+        <>
+            <GuestbookTopbar onPostSubmit={handleAddPost} />
 
-  return (
-    <>
-      <GuestbookTopbar onPostSubmit={handleAddPost} />
-      <GuestbookList
-        items={guestbooks}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-        onCommentClick={onCommentClick ?? (() => {})}
-        onPlaylistClick={onPlaylistClick ?? (() => {})}
-      />
-    </>
-  );
+            {isLoading ? (
+                <div className="flex flex-col justify-center items-center h-40 gap-4">
+                    <LoadingSpinner className="text-secondary" />
+                    <span className="text-sm text-secondary">
+                        방명록을 불러오는 중입니다...
+                    </span>
+                </div>
+            ) : (
+                <GuestbookList
+                    items={data?.data || []}
+                    onEdit={handleEdit}
+                    onDelete={handleDelete}
+                    onCommentClick={onCommentClick ?? (() => {})}
+                    onPlaylistClick={onPlaylistClick ?? (() => {})}
+                />
+            )}
+        </>
+    );
 }
 
 export default GuestbookListContainer;
