@@ -56,7 +56,7 @@ function MainContent() {
                 />
             )}
 
-            <Toaster position="top-right" />
+            <Toaster position="top-right" richColors />
 
             <MiniPlayer />
         </div>
