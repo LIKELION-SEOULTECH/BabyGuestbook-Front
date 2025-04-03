@@ -4,9 +4,9 @@
 
 ![test-badge](https://github.com/LIKELION-SEOULTECH/BabyGuestbook-Front/actions/workflows/test.yml/badge.svg)
 
-## ✨ Preview
+## ✨ Preview 🖥️
 
-![ui](https://github.com/user-attachments/assets/318dc49d-df8e-49f3-8cb8-b8b4a6fb26d2)
+https://github.com/user-attachments/assets/0cf718bf-4a33-44b7-a46a-0df86995c256
 
 
 ## ⚙️ 설치 및 실행
