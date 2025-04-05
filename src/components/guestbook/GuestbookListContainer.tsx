@@ -5,7 +5,7 @@ import GuestbookList from "./GuestbookList";
 import GuestbookTopbar from "./GuestbookTopbar";
 import CommentModal from "./comment/CommentModal";
 import { LoadingSpinner } from "../ui/loading-spinner";
-import { Emotion, Order } from "@/types/post";
+import { CreatePostRequest, Emotion, Order } from "@/types/post";
 import { TempPost } from "@/types/tempPost";
 import {
     useUpdatePostMutation,
@@ -89,11 +89,18 @@ function GuestbookListContainer({
         [deleteMutation]
     );
 
-    const handleAddPost = (newPost: TempPost) => {
-        createMutation.mutate(newPost, {
-            onSuccess: () => toast.success("방명록이 작성되었습니다."),
-            onError: () => toast.error("작성에 실패했습니다."),
-        });
+    const handleAddPost = ({
+        content,
+        username,
+        password,
+    }: CreatePostRequest) => {
+        createMutation.mutate(
+            { content, username, password },
+            {
+                onSuccess: () => toast.success("방명록이 작성되었습니다."),
+                onError: () => toast.error("작성에 실패했습니다."),
+            }
+        );
     };
 
     // 댓글 modal focus 대상입니다.

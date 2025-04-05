@@ -33,7 +33,13 @@ export const usePostsInfiniteQuery = (params: {
     };
 
     return useInfiniteQuery({
-        queryKey: ["infinitePosts", initialParams],
+        queryKey: [
+            "infinitePosts",
+            params.emotion,
+            params.order,
+            params.pageSize,
+        ],
+
         queryFn: ({ pageParam }) => fetchInfinitePosts(pageParam),
         initialPageParam: initialParams,
         getNextPageParam: (lastPage, pages) => {
@@ -55,7 +61,7 @@ export const usePostsInfiniteQuery = (params: {
 
             return nextPageParam;
         },
-        staleTime: 1000, // 1초 동안은 캐시된 데이터 사용
+
         gcTime: 5 * 60 * 1000, // 5분 동안 캐시 유지
     });
 };
@@ -68,9 +74,31 @@ export const useCreatePostMutation = () => {
         mutationFn: (params: CreatePostRequest) => createPost(params),
         onSuccess: () => {
             // 쿼리 캐시 무효화하여 새로운 데이터 가져오기
-            queryClient.invalidateQueries({ queryKey: ["posts"] });
-            queryClient.invalidateQueries({ queryKey: ["infinitePosts"] });
+            queryClient.removeQueries({
+                queryKey: ["infinitePosts"],
+                exact: false,
+            });
         },
+        // onSuccess: (newPost) => {
+        //     // 기존의 invalidateQueries 대신 새로운 데이터를 캐시에 직접 추가
+        //     queryClient.setQueryData(["infinitePosts"], (oldData: any) => {
+        //         if (!oldData) return oldData;
+
+        //         // 첫 페이지에 새 포스트 추가
+        //         const newPages = [...oldData.pages];
+        //         if (newPages[0]) {
+        //             newPages[0] = {
+        //                 ...newPages[0],
+        //                 data: [newPost.data[0], ...newPages[0].data],
+        //             };
+        //         }
+
+        //         return {
+        //             ...oldData,
+        //             pages: newPages,
+        //         };
+        //     });
+        // },
         onError: (error) => {
             console.error("Error creating post", error);
         },
@@ -89,9 +117,29 @@ export const useUpdatePostMutation = () => {
             }),
         onSuccess: () => {
             // 쿼리 캐시 무효화하여 새로운 데이터 가져오기
-            queryClient.invalidateQueries({ queryKey: ["posts"] });
-            queryClient.invalidateQueries({ queryKey: ["infinitePosts"] });
+            queryClient.removeQueries({
+                queryKey: ["infinitePosts"],
+                exact: false,
+            });
         },
+        // onSuccess: (updatedPost, variables) => {
+        //     queryClient.setQueryData(["infinitePosts"], (oldData: any) => {
+        //         if (!oldData) return oldData;
+        //         // 모든 페이지에서 수정된 포스트를 찾아 업데이트
+        //         const newPages = oldData.pages.map((page: any) => ({
+        //             ...page,
+        //             data: page.data.map((post: any) =>
+        //                 post.postId === variables.postId
+        //                     ? updatedPost.data[0]
+        //                     : post
+        //             ),
+        //         }));
+        //         return {
+        //             ...oldData,
+        //             pages: newPages,
+        //         };
+        //     });
+        // },
         onError: (error) => {
             console.error("Error updating post", error);
         },
@@ -109,9 +157,34 @@ export const useDeletePostMutation = () => {
             }),
         onSuccess: () => {
             // 쿼리 캐시 무효화하여 새로운 데이터 가져오기
-            queryClient.invalidateQueries({ queryKey: ["posts"] });
-            queryClient.invalidateQueries({ queryKey: ["infinitePosts"] });
+            queryClient.removeQueries({
+                queryKey: ["infinitePosts"],
+                exact: false,
+            });
         },
+        // onSuccess: (_, variables) => {
+        //     queryClient.setQueryData(["infinitePosts"], (oldData: any) => {
+        //         if (!oldData) return oldData;
+
+        //         // 모든 페이지에서 삭제된 포스트를 필터링하여 제거
+        //         const newPages = oldData.pages.map((page: any) => ({
+        //             ...page,
+        //             data: page.data.filter(
+        //                 (post: any) => post.postId !== variables.postId
+        //             ),
+        //         }));
+
+        //         // 빈 페이지 제거 (선택사항)
+        //         const nonEmptyPages = newPages.filter(
+        //             (page: any) => page.data.length > 0
+        //         );
+
+        //         return {
+        //             ...oldData,
+        //             pages: nonEmptyPages,
+        //         };
+        //     });
+        // },
         onError: (error) => {
             console.error("Error deleting post", error);
         },
