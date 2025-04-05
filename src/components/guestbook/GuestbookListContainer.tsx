@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { useInView } from "react-intersection-observer";
 import GuestbookList from "./GuestbookList";
@@ -98,7 +98,7 @@ function GuestbookListContainer({
 
     // 댓글 modal focus 대상입니다.
     const [activePostId, setActivePostId] = useState<number | null>(null);
-    
+
     const allPosts = data?.pages.flatMap((page) => page.data) || [];
 
     return (
@@ -118,8 +118,8 @@ function GuestbookListContainer({
                         items={allPosts}
                         onEdit={handleEdit}
                         onDelete={handleDelete}
-                        onCommentClick={onCommentClick ?? (() => {})}
-                        onPlaylistClick={onPlaylistClick ?? (() => {})}
+                        onCommentClick={(postId) => setActivePostId(postId)}
+                        onPlaylistClick={onPlaylistClick ?? (() => { })}
                     />
                     <div
                         ref={ref}
