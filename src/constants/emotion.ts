@@ -64,3 +64,27 @@ export const emotionConfigs: Record<EmotionConfig["key"], EmotionConfig> = {
         color: "#8fc1a9", // --color-emotion-uncomfortable
     },
 };
+
+export const EMOTIONS = {
+    ALL: "all",
+    HAPPY: "happy",
+    SAD: "sad",
+    ANGRY: "angry",
+    SURPRISED: "surprised",
+    FEAR: "fear",
+    CALM: "calm",
+    UNCOMFORTABLE: "uncomfortable",
+} as const;
+
+export const EMOTION_LABELS = {
+    [EMOTIONS.ALL]: "전체",
+    [EMOTIONS.HAPPY]: "기쁨",
+    [EMOTIONS.SAD]: "슬픔",
+    [EMOTIONS.ANGRY]: "화남",
+    [EMOTIONS.SURPRISED]: "놀람",
+    [EMOTIONS.FEAR]: "공포",
+    [EMOTIONS.CALM]: "잔잔함",
+    [EMOTIONS.UNCOMFORTABLE]: "불편함",
+} as const;
+
+export type Emotion = (typeof EMOTIONS)[keyof typeof EMOTIONS];
