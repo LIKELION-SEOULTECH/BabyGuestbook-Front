@@ -43,7 +43,7 @@ function GuestbookListContainer({
     } = usePostsInfiniteQuery({
         order: currentOrder,
         emotion: currentEmotion,
-        pageSize: 1, // 페이지당 3개의 포스트
+        pageSize: 5, // 페이지당 5개의 포스트
     });
 
     const { ref, inView } = useInView({
