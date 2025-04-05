@@ -1,5 +1,6 @@
 import { CommentDTO } from "@/types/comment";
 import CommentItem from "./CommentItem";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface CommentListProps {
     comments: CommentDTO[];
@@ -16,10 +17,12 @@ export default function CommentList({ comments, onDelete }: CommentListProps) {
     }
 
     return (
-        <div className="flex flex-col gap-4">
+        <ScrollArea className="h-80 w-full rounded-sm p-2" type="always">
             {comments.map((comment) => (
-                <CommentItem comment={comment} key={comment.commentId} onDelete={onDelete} />
+                <div className="py-2" key={comment.commentId}>
+                    <CommentItem comment={comment} onDelete={onDelete} />
+                </div>
             ))}
-        </div>
+        </ScrollArea>
     );
 }

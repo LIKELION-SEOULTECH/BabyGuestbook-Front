@@ -5,21 +5,93 @@ import { CreateCommentRequest, DeleteCommentRequest } from "@/types/comment";
 const commentsDB: CommentDTO[] = [
     {
         commentId: 1,
-        content: "안뇽하세여",
+        content: "그냥 그렇다.",
         user: {
-            userId: 101,
-            username: "어린이사자",
+            userId: 201,
+            username: "사용자A",
         },
-        updatedAt: new Date().toISOString(),
+        updatedAt: "2025-04-05T16:48:00",
     },
     {
         commentId: 2,
-        content: "저녁뭐먹지요",
+        content: "의미없는 말.",
         user: {
-            userId: 102,
-            username: "꼬맹이사자",
+            userId: 202,
+            username: "사용자B",
         },
-        updatedAt: new Date().toISOString(),
+        updatedAt: "2025-04-05T16:38:00",
+    },
+    {
+        commentId: 3,
+        content: "뭐랄까...",
+        user: {
+            userId: 203,
+            username: "사용자C",
+        },
+        updatedAt: "2025-04-05T16:28:00",
+    },
+    {
+        commentId: 4,
+        content: "헛소리 중 하나이다.",
+        user: {
+            userId: 204,
+            username: "사용자D",
+        },
+        updatedAt: "2025-04-05T15:58:00",
+    },
+    {
+        commentId: 5,
+        content: "그냥 웃기기만 하다.",
+        user: {
+            userId: 205,
+            username: "사용자E",
+        },
+        updatedAt: "2025-04-05T14:58:00",
+    },
+    {
+        commentId: 6,
+        content: "아무 의미가 없다.",
+        user: {
+            userId: 206,
+            username: "사용자F",
+        },
+        updatedAt: "2025-04-05T13:58:00",
+    },
+    {
+        commentId: 7,
+        content: "말이 필요 없다.",
+        user: {
+            userId: 207,
+            username: "사용자G",
+        },
+        updatedAt: "2025-04-04T16:58:00",
+    },
+    {
+        commentId: 8,
+        content: "생각 없이 쓴 댓글이다.",
+        user: {
+            userId: 208,
+            username: "사용자H",
+        },
+        updatedAt: "2025-04-03T16:58:00",
+    },
+    {
+        commentId: 9,
+        content: "그냥 지나가는 말이다.",
+        user: {
+            userId: 209,
+            username: "사용자I",
+        },
+        updatedAt: "2025-04-01T16:58:00",
+    },
+    {
+        commentId: 10,
+        content: "의미를 찾기 어렵다.",
+        user: {
+            userId: 210,
+            username: "사용자J",
+        },
+        updatedAt: "2025-03-31T16:58:00",
     },
 ];
 
@@ -32,6 +104,7 @@ export const commentHandlers = [
     // 댓글 조회
     http.get<never, CommentResponse>("/api/v1/posts/:postId/comments", ({ params, request }) => {
         const { postId } = params;
+
 
         return HttpResponse.json<CommentResponse>({
             code: "SUCCESS",

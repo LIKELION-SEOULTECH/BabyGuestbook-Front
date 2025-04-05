@@ -25,12 +25,12 @@ function CommentItem({ comment, onDelete }: CommentItemProps) {
             <ContextMenu>
                 <ContextMenuTrigger>
                     <div className="w-full inline-flex flex-col justify-center items-start gap-2 overflow-hidden">
-                        <div className="inline-flex justify-start items-center gap-2 text-SECONDARY text-sm leading-none tracking-tight">
+                        <div className="w-full flex justify-start items-center gap-2 text-secondary text-sm leading-none tracking-tight">
                             <span>{user.username}</span>
-                            <div className="w-0.5 h-0.5 bg-SECONDARY rounded-full" />
+                            <div className="w-0.5 h-0.5 bg-secondary rounded-full" />
                             <span>{displayTime}</span>
                         </div>
-                        <p className="text-lg leading-snug tracking-tight">{content}</p>
+                        <p className="text-md leading-snug tracking-tight">{content}</p>
                     </div>
                 </ContextMenuTrigger>
 

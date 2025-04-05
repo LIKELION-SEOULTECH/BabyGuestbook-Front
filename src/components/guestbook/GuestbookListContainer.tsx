@@ -11,6 +11,7 @@ import {
     useCreatePostMutation,
     usePostsQuery,
 } from "@/queries/postQueries";
+import CommentModal from "./comment/CommentModal";
 
 export interface GuestbookListContainerProps {
     currentOrder: Order;
@@ -28,7 +29,6 @@ export interface GuestbookListContainerProps {
 function GuestbookListContainer({
     currentOrder,
     currentEmotion,
-    onCommentClick,
     onPlaylistClick,
 }: GuestbookListContainerProps) {
     const { data, isLoading, isError, error, refetch } = usePostsQuery({
@@ -75,6 +75,9 @@ function GuestbookListContainer({
         });
     };
 
+    // 댓글 modal focus 대상입니다.
+    const [activePostId, setActivePostId] = useState<number | null>(null);
+
     return (
         <>
             <GuestbookTopbar onPostSubmit={handleAddPost} />
@@ -91,10 +94,16 @@ function GuestbookListContainer({
                     items={data?.data || []}
                     onEdit={handleEdit}
                     onDelete={handleDelete}
-                    onCommentClick={onCommentClick ?? (() => {})}
-                    onPlaylistClick={onPlaylistClick ?? (() => {})}
+                    onCommentClick={(postId) => setActivePostId(postId)}
+                    onPlaylistClick={onPlaylistClick ?? (() => { })}
                 />
             )}
+
+            <CommentModal
+                postId={activePostId ?? 0}
+                open={activePostId !== null}
+                onClose={() => setActivePostId(null)}
+            />
         </>
     );
 }
