@@ -66,14 +66,14 @@ export const emotionConfigs: Record<EmotionConfig["key"], EmotionConfig> = {
 };
 
 export const EMOTIONS = {
-    ALL: "all",
-    HAPPY: "happy",
-    SAD: "sad",
-    ANGRY: "angry",
-    SURPRISED: "surprised",
-    FEAR: "fear",
-    CALM: "calm",
-    UNCOMFORTABLE: "uncomfortable",
+    ALL: "ALL",
+    HAPPY: "HAPPY",
+    SAD: "SAD",
+    ANGRY: "ANGRY",
+    SURPRISED: "SURPRISED",
+    FEAR: "FEAR",
+    CALM: "CALM",
+    UNCOMFORTABLE: "UNCOMFORTABLE",
 } as const;
 
 export const EMOTION_LABELS = {

@@ -11,11 +11,18 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { EMOTIONS, EMOTION_LABELS, Emotion } from "@/constants/emotion";
 
-export function GuestbookDropdownMenu() {
+export function GuestbookDropdownMenu({
+    onEmotionChange,
+}: {
+    onEmotionChange: (emotion: Emotion) => void;
+}) {
     const [selectedEmotion, setSelectedEmotion] = React.useState<Emotion>(
         EMOTIONS.ALL
     );
-
+    const handleEmotionChange = (value: string) => {
+        setSelectedEmotion(value as Emotion);
+        onEmotionChange(value as Emotion);
+    };
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -31,9 +38,7 @@ export function GuestbookDropdownMenu() {
                 <DropdownMenuSeparator />
                 <DropdownMenuRadioGroup
                     value={selectedEmotion}
-                    onValueChange={(value) =>
-                        setSelectedEmotion(value as Emotion)
-                    }
+                    onValueChange={handleEmotionChange}
                 >
                     {Object.entries(EMOTIONS).map(([key, value]) => (
                         <DropdownMenuRadioItem key={value} value={value}>
