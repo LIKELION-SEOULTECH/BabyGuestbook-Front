@@ -38,7 +38,7 @@ export const postHandlers = [
             commentCnt: 0,
         };
 
-        mockPosts.unshift(newPost);
+        mockPosts.push(newPost);
         if (body.password) {
             mockPasswordMap[newPostId] = body.password;
         }
@@ -81,7 +81,7 @@ export const postHandlers = [
 
         const paged = filtered.slice(0, params.pageSize);
         // 1초 지연 추가
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        // await new Promise((resolve) => setTimeout(resolve, 1000));
         return HttpResponse.json<PostResponse>({
             code: "SUCCESS",
             statusCode: 200,
