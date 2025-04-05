@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import { useInView } from "react-intersection-observer";
 import GuestbookList from "./GuestbookList";
 import GuestbookTopbar from "./GuestbookTopbar";
 import CommentModal from "./comment/CommentModal";
@@ -12,7 +13,6 @@ import {
     useCreatePostMutation,
     usePostsInfiniteQuery,
 } from "@/queries/postQueries";
-import { useInView } from "react-intersection-observer";
 
 export interface GuestbookListContainerProps {
     currentOrder: Order;
