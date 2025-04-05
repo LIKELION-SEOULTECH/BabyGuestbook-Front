@@ -9,7 +9,7 @@ import type {
 export const fetchComments = async (
     postId: number
 ): Promise<CommentResponse> => {
-    const response = await client.get<CommentResponse>(`/api/v1/posts/${postId}/comments`);
+    const response = await client.get<CommentResponse>(`/posts/${postId}/comments`);
     return response.data;
 };
 
@@ -18,7 +18,7 @@ export const createComment = async (
     postId: number,
     body: CreateCommentRequest
 ) => {
-    const response = await client.post(`/api/v1/posts/${postId}/comments`, body);
+    const response = await client.post(`/posts/${postId}/comments`, body);
     return response.data;
 };
 
@@ -28,7 +28,7 @@ export const deleteComment = async (
     commentId: number,
     body: DeleteCommentRequest
 ) => {
-    const response = await client.delete(`/api/v1/posts/${postId}/comments/${commentId}`, {
+    const response = await client.delete(`/posts/${postId}/comments/${commentId}`, {
         params: {
             password: body.password,
         },
