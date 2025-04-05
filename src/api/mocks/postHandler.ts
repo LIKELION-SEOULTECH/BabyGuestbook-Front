@@ -52,7 +52,7 @@ export const postHandlers = [
     }),
 
     // 📖 방명록 조회
-    http.get("/api/v1/posts", ({ request }) => {
+    http.get("/api/v1/posts", async ({ request }) => {
         const url = new URL(request.url);
         const params: ReadPostParameter = {
             order: url.searchParams.get("order") as Order,
@@ -80,7 +80,8 @@ export const postHandlers = [
         }
 
         const paged = filtered.slice(0, params.pageSize);
-
+        // 1초 지연 추가
+        await new Promise((resolve) => setTimeout(resolve, 1000));
         return HttpResponse.json<PostResponse>({
             code: "SUCCESS",
             statusCode: 200,

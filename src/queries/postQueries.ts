@@ -20,16 +20,6 @@ import type {
     DeletePostRequest,
 } from "@/types/post";
 
-// 방명록 가져오기, 처음에 한번만 호출
-export const usePostsQuery = (
-    params: Omit<ReadPostParameter, "lastPostId">
-) => {
-    return useQuery({
-        queryKey: ["posts", params],
-        queryFn: () => fetchPosts(params),
-    });
-};
-
 // 방명록 가져오기, 무한 스크롤
 export const usePostsInfiniteQuery = (params: {
     order: Order;
@@ -65,6 +55,8 @@ export const usePostsInfiniteQuery = (params: {
 
             return nextPageParam;
         },
+        staleTime: 1000, // 1초 동안은 캐시된 데이터 사용
+        gcTime: 5 * 60 * 1000, // 5분 동안 캐시 유지
     });
 };
 

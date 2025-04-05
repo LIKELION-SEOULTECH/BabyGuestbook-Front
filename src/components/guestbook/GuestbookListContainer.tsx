@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { toast } from "sonner";
 import GuestbookList from "./GuestbookList";
 import GuestbookTopbar from "./GuestbookTopbar";
@@ -32,8 +32,6 @@ function GuestbookListContainer({
     onCommentClick,
     onPlaylistClick,
 }: GuestbookListContainerProps) {
-    const { ref, inView } = useInView();
-
     const {
         data,
         isLoading,
@@ -45,14 +43,20 @@ function GuestbookListContainer({
     } = usePostsInfiniteQuery({
         order: currentOrder,
         emotion: currentEmotion,
-        pageSize: 3, // 페이지당 3개의 포스트
+        pageSize: 1, // 페이지당 3개의 포스트
+    });
+
+    const { ref, inView } = useInView({
+        threshold: 0.5,
+        triggerOnce: false,
+        rootMargin: isFetchingNextPage ? "-100% 0px" : "0px",
     });
 
     useEffect(() => {
-        if (inView && hasNextPage && !isFetchingNextPage) {
+        if (inView && hasNextPage && !isLoading && !isFetchingNextPage) {
             fetchNextPage();
         }
-    }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
+    }, [inView, hasNextPage, isLoading, isFetchingNextPage, fetchNextPage]);
 
     const createMutation = useCreatePostMutation();
     const updateMutation = useUpdatePostMutation();
