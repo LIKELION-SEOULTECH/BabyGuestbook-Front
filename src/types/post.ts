@@ -1,6 +1,14 @@
 import { emotionConfigs } from "@/constants/emotion";
 
-export type Emotion = keyof typeof emotionConfigs;
+export type Emotion =
+    | "HAPPY"
+    | "SAD"
+    | "ANGRY"
+    | "SURPRISED"
+    | "FEAR"
+    | "CALM"
+    | "UNCOMFORTABLE"
+    | "ALL";
 export type Order = "LATEST" | "COMMENT";
 
 export interface ReadPostParameter {

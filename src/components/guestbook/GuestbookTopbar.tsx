@@ -1,27 +1,36 @@
-import { useState } from "react";
+import { use, useState } from "react";
 import { Pencil } from "lucide-react";
 import GuestbookWriteDialog from "./GuestbookWriteDialog";
 import { toast } from "sonner";
 import { TempPost } from "@/types/tempPost";
 import { CommentDTO } from "@/types/comment";
-import { CreatePostRequest } from "@/types/post";
+import { CreatePostRequest, Order } from "@/types/post";
+import { GuestbookDropdownMenu } from "./GuestbookDropdownMenu";
+import { Emotion, EMOTIONS } from "@/constants/emotion";
 
 interface GuestbookTopbarProps {
     onPostSubmit: (post: CreatePostRequest) => void;
+    currentOrder: Order;
+    onOrderChange: (value: Order) => void;
+    onEmotionChange: (value: Emotion) => void;
 }
 
 /**
  * @description 방명록 상단바 - 내 방명록 쓰기 버튼, 정렬 옵션, 감정별 필터
  * @returns {JSX.Element}
  */
-function GuestbookTopbar({ onPostSubmit }: GuestbookTopbarProps) {
+function GuestbookTopbar({
+    onPostSubmit,
+    currentOrder,
+    onOrderChange,
+    onEmotionChange,
+}: GuestbookTopbarProps) {
     const [isWriteOpen, setIsWriteOpen] = useState(false);
     const handleWriteSubmit = ({ content, password }: CreatePostRequest) => {
         onPostSubmit({ content, password });
         toast.success("방명록이 작성되었습니다!");
         setIsWriteOpen(false);
     };
-
     return (
         <>
             <div className="flex justify-between items-center overflow-hidden w-full">
@@ -37,16 +46,30 @@ function GuestbookTopbar({ onPostSubmit }: GuestbookTopbarProps) {
                 <div className="flex items-center gap-3">
                     {/* 정렬 옵션: 최신순 / 댓글순 */}
                     <div className="h-6 rounded-full flex items-center gap-2.5 leading-3 tracking-tight text-sm">
-                        <span className="underline cursor-pointer">최신순</span>
-                        <span className="text-secondary cursor-pointer">
+                        <span
+                            className={`cursor-pointer ${
+                                currentOrder === "LATEST"
+                                    ? "underline"
+                                    : "text-secondary"
+                            }`}
+                            onClick={() => onOrderChange("LATEST")}
+                        >
+                            최신순
+                        </span>
+                        <span
+                            className={`cursor-pointer ${
+                                currentOrder === "COMMENT"
+                                    ? "underline"
+                                    : "text-secondary"
+                            }`}
+                            onClick={() => onOrderChange("COMMENT")}
+                        >
                             댓글순
                         </span>
                     </div>
 
                     {/* 감정별 필터 -- TODO: Dropdown 등 */}
-                    <div className="px-4.5 py-2 bg-surface rounded-full border-[0.5px] flex justify-between items-center text-sm leading-3 tracking-tight">
-                        <span>감정별로 보기</span>
-                    </div>
+                    <GuestbookDropdownMenu onEmotionChange={onEmotionChange} />
                 </div>
             </div>
 

@@ -5,18 +5,16 @@ import GuestbookList from "./GuestbookList";
 import GuestbookTopbar from "./GuestbookTopbar";
 import CommentModal from "./comment/CommentModal";
 import { LoadingSpinner } from "../ui/loading-spinner";
-import { CreatePostRequest, Emotion, Order } from "@/types/post";
-import { TempPost } from "@/types/tempPost";
+import { CreatePostRequest, Order } from "@/types/post";
 import {
     useUpdatePostMutation,
     useDeletePostMutation,
     useCreatePostMutation,
     usePostsInfiniteQuery,
 } from "@/queries/postQueries";
+import { Emotion } from "@/constants/emotion";
 
 export interface GuestbookListContainerProps {
-    currentOrder: Order;
-    currentEmotion: Emotion | undefined;
     onCommentClick?: (postId: number) => void;
     onPlaylistClick?: (
         emotion: keyof typeof import("@/constants/emotion").emotionConfigs
@@ -28,10 +26,11 @@ export interface GuestbookListContainerProps {
  * API Call, state 관리 등 비즈니스 로직을 담당합니다.
  */
 function GuestbookListContainer({
-    currentOrder,
-    currentEmotion,
     onPlaylistClick,
 }: GuestbookListContainerProps) {
+    const [currentOrder, setCurrentOrder] = useState<Order>("LATEST");
+    const [currentEmotion, setCurrentEmotion] = useState<Emotion>("ALL");
+
     const {
         data,
         isLoading,
@@ -110,7 +109,16 @@ function GuestbookListContainer({
 
     return (
         <>
-            <GuestbookTopbar onPostSubmit={handleAddPost} />
+            <GuestbookTopbar
+                onPostSubmit={handleAddPost}
+                onOrderChange={(value: Order) => {
+                    setCurrentOrder(value);
+                }}
+                onEmotionChange={(value: Emotion) => {
+                    setCurrentEmotion(value);
+                }}
+                currentOrder={currentOrder}
+            />
 
             {isLoading && !data ? (
                 <div className="flex flex-col justify-center items-center h-40 gap-4">
@@ -126,7 +134,7 @@ function GuestbookListContainer({
                         onEdit={handleEdit}
                         onDelete={handleDelete}
                         onCommentClick={(postId) => setActivePostId(postId)}
-                        onPlaylistClick={onPlaylistClick ?? (() => { })}
+                        onPlaylistClick={onPlaylistClick ?? (() => {})}
                     />
                     <div
                         ref={ref}

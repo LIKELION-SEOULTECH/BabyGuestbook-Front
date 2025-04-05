@@ -12,14 +12,13 @@ import {
     useQueryClient,
 } from "@tanstack/react-query";
 import type {
-    Emotion,
     Order,
     ReadPostParameter,
     CreatePostRequest,
     UpdatePostRequest,
     DeletePostRequest,
+    Emotion,
 } from "@/types/post";
-
 // 방명록 가져오기, 무한 스크롤
 export const usePostsInfiniteQuery = (params: {
     order: Order;
@@ -28,7 +27,7 @@ export const usePostsInfiniteQuery = (params: {
 }) => {
     const initialParams: Omit<ReadPostParameter, "lastPostId"> = {
         order: params.order,
-        emotion: params.emotion,
+        emotion: params.emotion === "ALL" ? undefined : params.emotion,
         pageSize: params.pageSize || 10,
     };
 

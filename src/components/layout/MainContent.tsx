@@ -8,18 +8,12 @@ import MiniPlayer from "../player/MiniPlayer";
 
 function MainContent() {
     const { curatePlaylistByEmotion } = usePlayer();
-    const [currentOrder, setCurrentOrder] = useState<Order>("LATEST"); // 정렬
-    const [currentEmotion, setCurrentEmotion] = useState<Emotion | undefined>(
-        undefined
-    ); // 필터링
 
     return (
         <div className="mt-16 flex flex-col gap-8">
             {/* <GuestbookTopbar /> */}
 
             <GuestbookListContainer
-                currentOrder={currentOrder}
-                currentEmotion={currentEmotion}
                 onCommentClick={(postId) => {
                     console.log("Comment clicked for postId:", postId);
                 }}
