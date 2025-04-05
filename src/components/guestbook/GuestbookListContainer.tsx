@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { toast } from "sonner";
 import GuestbookList from "./GuestbookList";
 import GuestbookTopbar from "./GuestbookTopbar";
@@ -9,8 +9,9 @@ import {
     useUpdatePostMutation,
     useDeletePostMutation,
     useCreatePostMutation,
-    usePostsQuery,
+    usePostsInfiniteQuery,
 } from "@/queries/postQueries";
+import { useInView } from "react-intersection-observer";
 
 export interface GuestbookListContainerProps {
     currentOrder: Order;
@@ -31,11 +32,31 @@ function GuestbookListContainer({
     onCommentClick,
     onPlaylistClick,
 }: GuestbookListContainerProps) {
-    const { data, isLoading, isError, error, refetch } = usePostsQuery({
+    const {
+        data,
+        isLoading,
+        isError,
+        error,
+        fetchNextPage,
+        hasNextPage,
+        isFetchingNextPage,
+    } = usePostsInfiniteQuery({
         order: currentOrder,
         emotion: currentEmotion,
-        pageSize: 10,
+        pageSize: 5, // 페이지당 5개의 포스트
     });
+
+    const { ref, inView } = useInView({
+        threshold: 0.5,
+        triggerOnce: false,
+        rootMargin: isFetchingNextPage ? "-100% 0px" : "0px",
+    });
+
+    useEffect(() => {
+        if (inView && hasNextPage && !isLoading && !isFetchingNextPage) {
+            fetchNextPage();
+        }
+    }, [inView, hasNextPage, isLoading, isFetchingNextPage, fetchNextPage]);
 
     const createMutation = useCreatePostMutation();
     const updateMutation = useUpdatePostMutation();
@@ -75,11 +96,13 @@ function GuestbookListContainer({
         });
     };
 
+    const allPosts = data?.pages.flatMap((page) => page.data) || [];
+
     return (
         <>
             <GuestbookTopbar onPostSubmit={handleAddPost} />
 
-            {isLoading ? (
+            {isLoading && !data ? (
                 <div className="flex flex-col justify-center items-center h-40 gap-4">
                     <LoadingSpinner className="text-secondary" />
                     <span className="text-sm text-secondary">
@@ -87,13 +110,27 @@ function GuestbookListContainer({
                     </span>
                 </div>
             ) : (
-                <GuestbookList
-                    items={data?.data || []}
-                    onEdit={handleEdit}
-                    onDelete={handleDelete}
-                    onCommentClick={onCommentClick ?? (() => {})}
-                    onPlaylistClick={onPlaylistClick ?? (() => {})}
-                />
+                <>
+                    <GuestbookList
+                        items={allPosts}
+                        onEdit={handleEdit}
+                        onDelete={handleDelete}
+                        onCommentClick={onCommentClick ?? (() => {})}
+                        onPlaylistClick={onPlaylistClick ?? (() => {})}
+                    />
+                    <div
+                        ref={ref}
+                        className="h-20 flex justify-center items-center"
+                    >
+                        {isFetchingNextPage ? (
+                            <LoadingSpinner className="text-secondary" />
+                        ) : !hasNextPage && allPosts.length > 0 ? (
+                            <span className="text-sm text-secondary">
+                                더 이상 불러올 방명록이 없습니다.
+                            </span>
+                        ) : null}
+                    </div>
+                </>
             )}
         </>
     );
