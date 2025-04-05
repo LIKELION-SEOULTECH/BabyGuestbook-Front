@@ -8,28 +8,9 @@ import type {
     Emotion,
     Order,
 } from "@/types/post";
-
+import { mockGuestbookItems } from "@/constants/mockData";
 // Mock DB
-let mockPosts: PostDTO[] = [
-    {
-        postId: 1,
-        content: "오늘저녁메뉴 추천해주세요! 뭐먹지",
-        emotion: "HAPPY",
-        user: { userId: 1, username: "도혀비" },
-        updatedAt: new Date().toISOString(),
-        likeCnt: 10,
-        commentCnt: 2,
-    },
-    {
-        postId: 2,
-        content: "벌써 4월이다! ㅎㅎ;;;;",
-        emotion: "SURPRISED",
-        user: { userId: 2, username: "도비" },
-        updatedAt: new Date().toISOString(),
-        likeCnt: 3,
-        commentCnt: 0,
-    },
-];
+let mockPosts: PostDTO[] = mockGuestbookItems;
 
 // 임시 비밀번호 매핑(postID -> 비밀번호)
 const mockPasswordMap: Record<number, string> = {
