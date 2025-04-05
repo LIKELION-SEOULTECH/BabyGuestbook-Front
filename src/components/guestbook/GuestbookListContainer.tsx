@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useRef } from "react";
 import { toast } from "sonner";
+import { useInView } from "react-intersection-observer";
 import GuestbookList from "./GuestbookList";
 import GuestbookTopbar from "./GuestbookTopbar";
+import CommentModal from "./comment/CommentModal";
 import { LoadingSpinner } from "../ui/loading-spinner";
 import { Emotion, Order } from "@/types/post";
 import { TempPost } from "@/types/tempPost";
@@ -11,7 +13,6 @@ import {
     useCreatePostMutation,
     usePostsInfiniteQuery,
 } from "@/queries/postQueries";
-import { useInView } from "react-intersection-observer";
 
 export interface GuestbookListContainerProps {
     currentOrder: Order;
@@ -29,7 +30,6 @@ export interface GuestbookListContainerProps {
 function GuestbookListContainer({
     currentOrder,
     currentEmotion,
-    onCommentClick,
     onPlaylistClick,
 }: GuestbookListContainerProps) {
     const {
@@ -96,6 +96,9 @@ function GuestbookListContainer({
         });
     };
 
+    // 댓글 modal focus 대상입니다.
+    const [activePostId, setActivePostId] = useState<number | null>(null);
+    
     const allPosts = data?.pages.flatMap((page) => page.data) || [];
 
     return (
@@ -132,6 +135,12 @@ function GuestbookListContainer({
                     </div>
                 </>
             )}
+
+            <CommentModal
+                postId={activePostId ?? 0}
+                open={activePostId !== null}
+                onClose={() => setActivePostId(null)}
+            />
         </>
     );
 }

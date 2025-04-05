@@ -14,3 +14,14 @@ export interface CommentResponse {
     message: string;
     data: CommentDTO[];
 }
+
+export interface CreateCommentRequest {
+    content: string;
+    username?: string;
+    password?: string;
+}
+
+export interface DeleteCommentRequest {
+    password: string;
+}
+
