@@ -29,7 +29,7 @@ export const postHandlers = [
             postId: newPostId,
             content: body.content,
             emotion: "HAPPY",
-            username: body.username || "익명",
+            username: "익명",
             updatedAt: new Date().toISOString(),
             isLike: false,
             likeCnt: 0,

@@ -1,9 +1,7 @@
-import { use, useState } from "react";
+import { useState } from "react";
 import { Pencil } from "lucide-react";
 import GuestbookWriteDialog from "./GuestbookWriteDialog";
 import { toast } from "sonner";
-import { TempPost } from "@/types/tempPost";
-import { CommentDTO } from "@/types/comment";
 import { CreatePostRequest, Order } from "@/types/post";
 import { GuestbookDropdownMenu } from "./GuestbookDropdownMenu";
 import { Emotion, EMOTIONS } from "@/constants/emotion";
@@ -31,6 +29,7 @@ function GuestbookTopbar({
         toast.success("방명록이 작성되었습니다!");
         setIsWriteOpen(false);
     };
+
     return (
         <>
             <div className="flex justify-between items-center overflow-hidden w-full">
@@ -47,21 +46,19 @@ function GuestbookTopbar({
                     {/* 정렬 옵션: 최신순 / 댓글순 */}
                     <div className="h-6 rounded-full flex items-center gap-2.5 leading-3 tracking-tight text-sm">
                         <span
-                            className={`cursor-pointer ${
-                                currentOrder === "LATEST"
-                                    ? "underline"
-                                    : "text-secondary"
-                            }`}
+                            className={`cursor-pointer ${currentOrder === "LATEST"
+                                ? "underline"
+                                : "text-secondary"
+                                }`}
                             onClick={() => onOrderChange("LATEST")}
                         >
                             최신순
                         </span>
                         <span
-                            className={`cursor-pointer ${
-                                currentOrder === "COMMENT"
-                                    ? "underline"
-                                    : "text-secondary"
-                            }`}
+                            className={`cursor-pointer ${currentOrder === "COMMENT"
+                                ? "underline"
+                                : "text-secondary"
+                                }`}
                             onClick={() => onOrderChange("COMMENT")}
                         >
                             댓글순

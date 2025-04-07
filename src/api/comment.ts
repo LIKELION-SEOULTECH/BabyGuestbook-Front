@@ -29,7 +29,7 @@ export const deleteComment = async (
     body: DeleteCommentRequest
 ) => {
     const response = await client.delete(`/posts/${postId}/comments/${commentId}`, {
-        data: { body },
+        data: body,
     });
     return response.data;
 };

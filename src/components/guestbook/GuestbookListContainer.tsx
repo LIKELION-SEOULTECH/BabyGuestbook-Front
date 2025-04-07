@@ -90,11 +90,10 @@ function GuestbookListContainer({
 
     const handleAddPost = ({
         content,
-        username,
         password,
     }: CreatePostRequest) => {
         createMutation.mutate(
-            { content, username, password },
+            { content, password },
             {
                 onSuccess: () => toast.success("방명록이 작성되었습니다."),
                 onError: () => toast.error("작성에 실패했습니다."),
@@ -134,7 +133,7 @@ function GuestbookListContainer({
                         onEdit={handleEdit}
                         onDelete={handleDelete}
                         onCommentClick={(postId) => setActivePostId(postId)}
-                        onPlaylistClick={onPlaylistClick ?? (() => {})}
+                        onPlaylistClick={onPlaylistClick ?? (() => { })}
                     />
                     <div
                         ref={ref}

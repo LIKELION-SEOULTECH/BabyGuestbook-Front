@@ -38,8 +38,10 @@ function GuestbookItem({
     postId,
     content,
     emotion,
-    user,
+    username,
     updatedAt,
+    isLike,
+    likeCnt,
     commentCnt,
     onCommentClick,
     onPlaylistClick,
@@ -75,7 +77,7 @@ function GuestbookItem({
                     <div className="flex flex-col items-start gap-4">
                         {/* Top - 작성자 및 작성 시간 */}
                         <div className="flex items-center gap-2 text-secondary text-sm leading-none tracking-tight">
-                            <span>{user.username}</span>
+                            <span>{username}</span>
                             <span className="w-0.5 h-0.5 bg-secondary rounded-full" />
                             <span>{relativeUpdatedTime}</span>
                         </div>

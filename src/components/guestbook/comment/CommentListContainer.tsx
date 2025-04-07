@@ -17,7 +17,7 @@ function CommentListContainer({ postId }: CommentListContainerProps) {
     const handleCreateComment = useCallback(
         (content: string, username: string, password: string) => {
             createCommentMutation.mutate(
-                { content, username, password },
+                { content, password },
                 {
                     onSuccess: () => {
                         toast.success("댓글이 성공적으로 작성되었습니다.");
