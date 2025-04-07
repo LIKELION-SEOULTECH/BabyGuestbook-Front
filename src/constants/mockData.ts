@@ -25,6 +25,7 @@ export const mockGuestbookItems: PostDTO[] = Array.from(
         updatedAt: new Date(
             Date.now() - Math.floor(Math.random() * 30) * 24 * 60 * 60 * 1000
         ).toISOString(),
+        isLike: Math.random() < 0.5,
         likeCnt: Math.floor(Math.random() * 100),
         commentCnt: Math.floor(Math.random() * 20),
     })

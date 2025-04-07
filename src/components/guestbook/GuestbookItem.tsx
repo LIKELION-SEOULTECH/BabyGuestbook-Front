@@ -1,5 +1,5 @@
 import { memo, useMemo, useCallback } from "react";
-import { MessageSquare, Play } from "lucide-react";
+import { Heart, MessageSquare, Play } from "lucide-react";
 import {
     ContextMenu,
     ContextMenuContent,
@@ -14,6 +14,7 @@ import { PostDTO } from "@/types/post";
 import { formatRelativeDate } from "@/lib/formatRelativeDate";
 
 export interface GuestbookItemProps extends PostDTO {
+    onLikeClick?: () => void;
     onCommentClick?: () => void;
     onPlaylistClick?: () => void;
     onEdit?: (postId: number, content: string, password: string) => void;
@@ -43,6 +44,7 @@ function GuestbookItem({
     isLike,
     likeCnt,
     commentCnt,
+    onLikeClick,
     onCommentClick,
     onPlaylistClick,
     onEdit,
@@ -87,8 +89,25 @@ function GuestbookItem({
                             {content}
                         </p>
 
-                        {/* Bottom - 댓글 버튼 및 플레이리스트 버튼 */}
-                        <div className="w-full pt-2 flex items-center gap-4">
+                        {/* Bottom - 좋아요, 댓글 버튼 및 플레이리스트 버튼 */}
+
+
+                        <div className="w-full flex items-center gap-4">
+                            <div
+                                onClick={onLikeClick}
+                                className="flex items-center gap-1 text-secondary text-xs cursor-pointer transition-transform duration-150 ease-in-out hover:scale-103 active:scale-97"
+                            >
+                                <Heart
+                                    strokeWidth={1}
+                                    size={16}
+                                    className={isLike ? "fill-lion-orange text-lion-orange" : ""}
+                                />
+
+                                <span
+                                    className={isLike ? "text-lion-orange" : ""}
+                                >{likeCnt}</span>
+                            </div>
+
                             <div
                                 onClick={onCommentClick}
                                 className="flex items-center gap-1 text-secondary text-xs cursor-pointer transition-transform duration-150 ease-in-out hover:scale-103 active:scale-97"
@@ -100,6 +119,7 @@ function GuestbookItem({
                                 />
                                 <span>{commentCnt}</span>
                             </div>
+
                             <div
                                 onClick={onPlaylistClick}
                                 className="flex items-center rounded-sm cursor-pointer transition-transform duration-150 ease-in-out hover:scale-103 active:scale-97"
