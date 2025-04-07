@@ -15,19 +15,17 @@ export const mockGuestbookItems: PostDTO[] = Array.from(
             "FEAR",
             "UNCOMFORTABLE",
         ][Math.floor(Math.random() * 7)] as Emotion,
-        user: {
-            userId: i + 1,
-            username: [
-                "멋쟁이사자",
-                "행복한고양이",
-                "슬픈강아지",
-                "즐거운토끼",
-                "신나는거북이",
-            ][Math.floor(Math.random() * 5)],
-        },
+        username: [
+            "멋쟁이사자",
+            "행복한고양이",
+            "슬픈강아지",
+            "즐거운토끼",
+            "신나는거북이",
+        ][Math.floor(Math.random() * 5)],
         updatedAt: new Date(
             Date.now() - Math.floor(Math.random() * 30) * 24 * 60 * 60 * 1000
         ).toISOString(),
+        isLike: Math.random() < 0.5,
         likeCnt: Math.floor(Math.random() * 100),
         commentCnt: Math.floor(Math.random() * 20),
     })

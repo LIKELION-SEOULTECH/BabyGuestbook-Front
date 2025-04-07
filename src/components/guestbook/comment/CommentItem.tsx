@@ -16,7 +16,7 @@ function CommentItem({ comment, onDelete }: CommentItemProps) {
         }
     };
 
-    const { user, content } = comment;
+    const { username, content } = comment;
     const displayTime = formatRelativeDate(comment.updatedAt)
 
     return (
@@ -26,7 +26,7 @@ function CommentItem({ comment, onDelete }: CommentItemProps) {
                 <ContextMenuTrigger>
                     <div className="w-full inline-flex flex-col justify-center items-start gap-2 overflow-hidden">
                         <div className="w-full flex justify-start items-center gap-2 text-secondary text-sm leading-none tracking-tight">
-                            <span>{user.username}</span>
+                            <span>{username}</span>
                             <div className="w-0.5 h-0.5 bg-secondary rounded-full" />
                             <span>{displayTime}</span>
                         </div>

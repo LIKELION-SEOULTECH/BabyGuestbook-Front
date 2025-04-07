@@ -9,12 +9,7 @@ import type {
     PostDTO,
 } from "@/types/post";
 
-interface ApiResponse<T> {
-    code: string;
-    statusCode: number;
-    message: string;
-    data: T;
-}
+import type { ApiResponse } from "@/types/common"
 
 // ● GET: 방명록 목록 조회 (초기 로딩)
 export const fetchPosts = async (
@@ -66,11 +61,7 @@ export const deletePost = async (
 ): Promise<ApiResponse<null>> => {
     const response = await client.delete<ApiResponse<null>>(
         `/posts/${postId}`,
-        {
-            params: {
-                password: body.password,
-            },
-        }
+        { data: body } // data로 넣으면 req.body로 확인 될것으로 예상..
     );
     return response.data;
 };

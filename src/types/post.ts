@@ -9,6 +9,7 @@ export type Emotion =
     | "CALM"
     | "UNCOMFORTABLE"
     | "ALL";
+
 export type Order = "LATEST" | "COMMENT";
 
 export interface ReadPostParameter {
@@ -20,13 +21,12 @@ export interface ReadPostParameter {
 
 export interface CreatePostRequest {
     content: string;
-    username?: string;
-    password?: string;
+    password: string;
 }
 
 export interface UpdatePostRequest {
     content: string;
-    password?: string;
+    password: string;
 }
 
 export interface DeletePostRequest {
@@ -37,11 +37,9 @@ export interface PostDTO {
     postId: number;
     content: string;
     emotion: Emotion;
-    user: {
-        userId: number;
-        username: string;
-    };
-    updatedAt: string;
+    username: string;
+    updatedAt: string; // ISO 8601 maybe
+    isLike: boolean;
     likeCnt: number;
     commentCnt: number;
 }
