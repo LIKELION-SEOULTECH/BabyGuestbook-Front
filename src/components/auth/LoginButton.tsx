@@ -1,12 +1,50 @@
 import LikeLion from "@/assets/likelion_univ_orange.svg?react";
-import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Key } from "lucide-react";
-import KakaoButton from "./buttons/KakaoButton";
+import { Button } from "../ui/button";
+
+const KAKAO_AUTH_URL = "http://localhost:8080/login/oauth2/code/kakao";
+
+const openOAuthPopup = (authUrl: string, name = "oauth", width = 500, height = 600) => {
+    const left = window.screenX + (window.innerWidth - width) / 2;
+    const top = window.screenY + (window.innerHeight - height) / 2;
+
+    return window.open(
+        authUrl,
+        name,
+        `width=${width},height=${height},left=${left},top=${top},status=no,scrollbars=yes,resizable=yes`
+    );
+};
 
 function LoginButton() {
     const handleLogin = () => {
-        alert("로그인 버튼 클릭");
-    }
+        const popup = openOAuthPopup(KAKAO_AUTH_URL);
+
+        const interval = setInterval(() => {
+            try {
+                const url = popup?.location.href;
+                const hasToken = url && url.includes("accessToken");
+
+                if (hasToken) {
+                    const params = new URLSearchParams(new URL(url).search);
+                    const token = params.get("accessToken");
+
+                    if (token) {
+                        localStorage.setItem("accessToken", token);
+                    }
+
+                    popup?.close();
+                    clearInterval(interval);
+                }
+            } catch (err) {
+                // cross-origin...
+            }
+
+            if (popup?.closed) {
+                clearInterval(interval);
+            }
+        }, 500);
+    };
 
     return (
         <Dialog>
@@ -24,15 +62,15 @@ function LoginButton() {
                     <DialogTitle></DialogTitle>
                 </DialogHeader>
 
-                <div className="flex flex-col items-center justify-center gap-4 py-8">
+                <div className="flex flex-col items-center justify-center gap-8 py-8">
                     <div className="flex flex-col items-center justify-center gap-2">
                         <LikeLion className="h-3" />
                         <p className="text-xl">로그인하기</p>
                     </div>
 
-                    <div className="flex flex-col items-center justify-center gap-2">
-                        <KakaoButton />
-                    </div>
+                    <Button onClick={handleLogin} className="w-full bg-[#FEE500] hover:bg-[#FEE500]/80">
+                        카카오 로그인
+                    </Button>
                 </div>
             </DialogContent>
         </Dialog>
