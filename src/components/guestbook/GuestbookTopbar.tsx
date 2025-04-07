@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { Pencil } from "lucide-react";
 import GuestbookWriteDialog from "./GuestbookWriteDialog";
+import LoginButton from "../auth/LoginButton";
 import { toast } from "sonner";
 import { CreatePostRequest, Order } from "@/types/post";
 import { GuestbookDropdownMenu } from "./GuestbookDropdownMenu";
-import { Emotion, EMOTIONS } from "@/constants/emotion";
+import { Emotion } from "@/constants/emotion";
 
 interface GuestbookTopbarProps {
     onPostSubmit: (post: CreatePostRequest) => void;
@@ -41,6 +42,8 @@ function GuestbookTopbar({
                     <span>내 방명록 쓰기</span>
                     <Pencil size={12} className="ml-2" />
                 </div>
+
+                <LoginButton />
 
                 <div className="flex items-center gap-3">
                     {/* 정렬 옵션: 최신순 / 댓글순 */}
