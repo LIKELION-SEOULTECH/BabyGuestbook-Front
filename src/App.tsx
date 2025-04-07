@@ -5,6 +5,7 @@ import { useAuth } from "./hooks/auth/useAuth";
 import { PlayerProvider } from "./contexts/PlayerContext";
 import Header from "./components/layout/Header";
 import MainContent from "./components/layout/MainContent";
+import Footer from "./components/layout/Footer";
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -34,6 +35,7 @@ function App() {
                     <div className="max-w-4xl mx-auto px-4 pt-16 pb-12">
                         <Header />
                         <MainContent />
+                        <Footer />
                     </div>
                 </PlayerProvider>
             </QueryClientProvider>

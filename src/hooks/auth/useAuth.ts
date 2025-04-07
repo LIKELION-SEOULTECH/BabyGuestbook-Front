@@ -22,6 +22,7 @@ export const useAuth = () => {
         localStorage.removeItem('accessToken');
         setToken(null);
         setIsAuthenticated(false);
+        window.location.reload(); // ui 반영 문제-> 그냥 새로고침으로 해결 ㅎㅎ
     }, []);
 
     const loginWithPopup = useCallback(() => {
