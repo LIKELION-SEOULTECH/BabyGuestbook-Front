@@ -1,5 +1,4 @@
 import axios from "axios";
-import { getAccessToken } from "@/lib/auth";
 
 // axios 인스턴스 생성
 export const client = axios.create({
@@ -11,7 +10,8 @@ export const client = axios.create({
 });
 
 client.interceptors.request.use((config) => {
-    const token = getAccessToken()
+    const token = localStorage.getItem('accessToken');
+
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
     }

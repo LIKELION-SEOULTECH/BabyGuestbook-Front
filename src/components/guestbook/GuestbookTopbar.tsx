@@ -1,14 +1,12 @@
 import { useState } from "react";
+import { useAuth } from "@/hooks/auth/useAuth";
 import { Key, MessageCircleQuestion, Pencil } from "lucide-react";
 import GuestbookWriteDialog from "./GuestbookWriteDialog";
-import LoginButton from "../auth/LoginButton";
 import { toast } from "sonner";
 import { CreatePostRequest, Order } from "@/types/post";
 import { GuestbookDropdownMenu } from "./GuestbookDropdownMenu";
 import { Emotion } from "@/constants/emotion";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Button } from "../ui/button";
-import { handleLogin } from "@/lib/auth";
 
 interface GuestbookTopbarProps {
     onPostSubmit: (post: CreatePostRequest) => void;
@@ -27,6 +25,7 @@ function GuestbookTopbar({
     onOrderChange,
     onEmotionChange,
 }: GuestbookTopbarProps) {
+    const { isAuthenticated, loginWithPopup } = useAuth();
     const [isWriteOpen, setIsWriteOpen] = useState(false);
     const handleWriteSubmit = ({ content, password }: CreatePostRequest) => {
         onPostSubmit({ content, password });
@@ -38,21 +37,31 @@ function GuestbookTopbar({
         <>
             <div className="flex justify-between items-center overflow-hidden w-full">
                 {/* 내 방명록 쓰기 버튼 */}
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <div
-                            className="px-4.5 py-2 bg-lion-orange text-white rounded-full border-[0.5px] flex justify-between items-center text-sm font-semibold leading-3 tracking-tight cursor-pointer transition-transform duration-150 ease-in-out active:scale-97"
-                        >
-                            <span>내 방명록 쓰기</span>
-                            <Pencil size={12} className="ml-2" />
-                        </div>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                        <DropdownMenuItem onClick={handleLogin}>로그인하기 <Key /></DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => setIsWriteOpen(true)}>익명으로 남기기 <MessageCircleQuestion /></DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
+                {isAuthenticated ? (
+                    <div
+                        className="px-4.5 py-2 bg-lion-orange text-white rounded-full border-[0.5px] flex justify-between items-center text-sm font-semibold leading-3 tracking-tight cursor-pointer transition-transform duration-150 ease-in-out active:scale-97"
+                        onClick={() => setIsWriteOpen(true)}
+                    >
+                        <span>내 방명록 쓰기</span>
+                        <Pencil size={12} className="ml-2" />
+                    </div>
+                ) : (
 
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <div
+                                className="px-4.5 py-2 bg-lion-orange text-white rounded-full border-[0.5px] flex justify-between items-center text-sm font-semibold leading-3 tracking-tight cursor-pointer transition-transform duration-150 ease-in-out active:scale-97"
+                            >
+                                <span>내 방명록 쓰기</span>
+                                <Pencil size={12} className="ml-2" />
+                            </div>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                            <DropdownMenuItem onClick={loginWithPopup}>로그인하기 <Key /></DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setIsWriteOpen(true)}>익명으로 남기기 <MessageCircleQuestion /></DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                )}
                 <div className="flex items-center gap-3">
                     {/* 정렬 옵션: 최신순 / 댓글순 */}
                     <div className="h-6 rounded-full flex items-center gap-2.5 leading-3 tracking-tight text-sm">

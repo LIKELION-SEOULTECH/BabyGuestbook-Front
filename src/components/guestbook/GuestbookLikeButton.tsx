@@ -2,6 +2,7 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { useLikePostMutation, useUnlikePostMutation } from "@/queries/likeQueries";
 import { Heart } from "lucide-react";
+import { useAuth } from "@/hooks/auth/useAuth";
 
 interface LikeButtonProps {
     postId: number;
@@ -10,6 +11,7 @@ interface LikeButtonProps {
 }
 
 function LikeButton({ postId, isLike, likeCnt }: LikeButtonProps) {
+    const { isAuthenticated, loginWithPopup } = useAuth();
     const [liked, setLiked] = useState(isLike);
     const [count, setCount] = useState(likeCnt);
 
@@ -17,6 +19,11 @@ function LikeButton({ postId, isLike, likeCnt }: LikeButtonProps) {
     const unlikeMutation = useUnlikePostMutation();
 
     const handleLikeToggle = () => {
+        if (!isAuthenticated) {
+            loginWithPopup();
+            return
+        }
+
         if (liked) {
             unlikeMutation.mutate(postId, {
                 onSuccess: () => {
