@@ -7,6 +7,7 @@ import {
     ContextMenuTrigger,
 } from "../ui/context-menu";
 import GuestbookActionDialog from "./GuestbookActionDialog";
+import LikeButton from "./GuestbookLikeButton";
 
 import useGuestbookAction from "@/hooks/guestbook/useGuestbookAction";
 import { emotionConfigs } from "@/constants/emotion";
@@ -14,7 +15,6 @@ import { PostDTO } from "@/types/post";
 import { formatRelativeDate } from "@/lib/formatRelativeDate";
 
 export interface GuestbookItemProps extends PostDTO {
-    onLikeClick?: () => void;
     onCommentClick?: () => void;
     onPlaylistClick?: () => void;
     onEdit?: (postId: number, content: string, password: string) => void;
@@ -44,7 +44,6 @@ function GuestbookItem({
     isLike,
     likeCnt,
     commentCnt,
-    onLikeClick,
     onCommentClick,
     onPlaylistClick,
     onEdit,
@@ -93,22 +92,10 @@ function GuestbookItem({
 
 
                         <div className="w-full flex items-center gap-4">
-                            <div
-                                onClick={onLikeClick}
-                                className="flex items-center gap-1 text-secondary text-xs cursor-pointer transition-transform duration-150 ease-in-out hover:scale-103 active:scale-97"
-                            >
-                                <Heart
-                                    strokeWidth={1}
-                                    size={16}
-                                    className={isLike ? "fill-lion-orange text-lion-orange" : ""}
-                                />
 
-                                <span
-                                    className={isLike ? "text-lion-orange" : ""}
-                                >{likeCnt}</span>
-                            </div>
+                            <LikeButton postId={postId} isLike={isLike} likeCnt={likeCnt} />
 
-                            <div
+                            <button
                                 onClick={onCommentClick}
                                 className="flex items-center gap-1 text-secondary text-xs cursor-pointer transition-transform duration-150 ease-in-out hover:scale-103 active:scale-97"
                             >
@@ -118,9 +105,9 @@ function GuestbookItem({
                                     className="rotate-y-180"
                                 />
                                 <span>{commentCnt}</span>
-                            </div>
+                            </button>
 
-                            <div
+                            <button
                                 onClick={onPlaylistClick}
                                 className="flex items-center rounded-sm cursor-pointer transition-transform duration-150 ease-in-out hover:scale-103 active:scale-97"
                             >
@@ -138,7 +125,7 @@ function GuestbookItem({
                                     </span>
                                 </div>
                                 <Play size={12} className="ml-1" />
-                            </div>
+                            </button>
                         </div>
                     </div>
                 </ContextMenuTrigger>

@@ -9,12 +9,7 @@ import type {
     PostDTO,
 } from "@/types/post";
 
-interface ApiResponse<T> {
-    code: string;
-    statusCode: number;
-    message: string;
-    data: T;
-}
+import type { ApiResponse } from "@/types/common"
 
 // ● GET: 방명록 목록 조회 (초기 로딩)
 export const fetchPosts = async (
