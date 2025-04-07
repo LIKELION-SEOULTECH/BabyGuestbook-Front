@@ -66,11 +66,7 @@ export const deletePost = async (
 ): Promise<ApiResponse<null>> => {
     const response = await client.delete<ApiResponse<null>>(
         `/posts/${postId}`,
-        {
-            params: {
-                password: body.password,
-            },
-        }
+        { data: body } // data로 넣으면 req.body로 확인 될것으로 예상..
     );
     return response.data;
 };

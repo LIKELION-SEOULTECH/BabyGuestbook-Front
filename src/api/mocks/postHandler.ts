@@ -29,11 +29,9 @@ export const postHandlers = [
             postId: newPostId,
             content: body.content,
             emotion: "HAPPY",
-            user: {
-                userId: Math.floor(Math.random() * 1000),
-                username: body.username || "익명",
-            },
+            username: body.username || "익명",
             updatedAt: new Date().toISOString(),
+            isLike: false,
             likeCnt: 0,
             commentCnt: 0,
         };
