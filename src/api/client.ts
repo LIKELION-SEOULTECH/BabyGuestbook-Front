@@ -9,6 +9,15 @@ export const client = axios.create({
     },
 });
 
+client.interceptors.request.use((config) => {
+    const token = localStorage.getItem('accessToken');
+
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+});
+
 // 요청 인터셉터 설정
 // 401 에러, 인증이 필요한 경우 처리
 client.interceptors.response.use(
