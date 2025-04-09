@@ -8,28 +8,9 @@ import type {
     Emotion,
     Order,
 } from "@/types/post";
-
+import { mockGuestbookItems } from "@/constants/mockData";
 // Mock DB
-let mockPosts: PostDTO[] = [
-    {
-        postId: 1,
-        content: "오늘저녁메뉴 추천해주세요! 뭐먹지",
-        emotion: "HAPPY",
-        user: { userId: 1, username: "도혀비" },
-        updatedAt: new Date().toISOString(),
-        likeCnt: 10,
-        commentCnt: 2,
-    },
-    {
-        postId: 2,
-        content: "벌써 4월이다! ㅎㅎ;;;;",
-        emotion: "SURPRISED",
-        user: { userId: 2, username: "도비" },
-        updatedAt: new Date().toISOString(),
-        likeCnt: 3,
-        commentCnt: 0,
-    },
-];
+let mockPosts: PostDTO[] = mockGuestbookItems;
 
 // 임시 비밀번호 매핑(postID -> 비밀번호)
 const mockPasswordMap: Record<number, string> = {
@@ -48,16 +29,14 @@ export const postHandlers = [
             postId: newPostId,
             content: body.content,
             emotion: "HAPPY",
-            user: {
-                userId: Math.floor(Math.random() * 1000),
-                username: body.username || "익명",
-            },
+            username: "익명",
             updatedAt: new Date().toISOString(),
+            isLike: false,
             likeCnt: 0,
             commentCnt: 0,
         };
 
-        mockPosts.unshift(newPost);
+        mockPosts.push(newPost);
         if (body.password) {
             mockPasswordMap[newPostId] = body.password;
         }
@@ -71,7 +50,7 @@ export const postHandlers = [
     }),
 
     // 📖 방명록 조회
-    http.get("/api/v1/posts", ({ request }) => {
+    http.get("/api/v1/posts", async ({ request }) => {
         const url = new URL(request.url);
         const params: ReadPostParameter = {
             order: url.searchParams.get("order") as Order,
@@ -99,7 +78,8 @@ export const postHandlers = [
         }
 
         const paged = filtered.slice(0, params.pageSize);
-
+        // 1초 지연 추가
+        // await new Promise((resolve) => setTimeout(resolve, 1000));
         return HttpResponse.json<PostResponse>({
             code: "SUCCESS",
             statusCode: 200,

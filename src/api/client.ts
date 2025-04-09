@@ -2,11 +2,21 @@ import axios from "axios";
 
 // axios 인스턴스 생성
 export const client = axios.create({
-    baseURL: import.meta.env.VITE_API_URL + "/api/v1",
+    baseURL: "http://localhost:8080/api/v1",
+    withCredentials: true,
     headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
     },
+});
+
+client.interceptors.request.use((config) => {
+    const token = localStorage.getItem('accessToken');
+
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
 });
 
 // 요청 인터셉터 설정

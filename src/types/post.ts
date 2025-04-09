@@ -1,24 +1,22 @@
-import { emotionConfigs } from "@/constants/emotion";
+import type { BaseEmotion } from "@/constants/emotion";
 
-export type Emotion = keyof typeof emotionConfigs;
 export type Order = "LATEST" | "COMMENT";
 
 export interface ReadPostParameter {
     order: Order;
-    emotion?: Emotion;
+    emotion?: BaseEmotion;
     pageSize: number;
     lastPostId?: number;
 }
 
 export interface CreatePostRequest {
     content: string;
-    username?: string;
-    password?: string;
+    password: string;
 }
 
 export interface UpdatePostRequest {
     content: string;
-    password?: string;
+    password: string;
 }
 
 export interface DeletePostRequest {
@@ -28,12 +26,10 @@ export interface DeletePostRequest {
 export interface PostDTO {
     postId: number;
     content: string;
-    emotion: Emotion;
-    user: {
-        userId: number;
-        username: string;
-    };
-    updatedAt: string;
+    emotion: BaseEmotion;
+    username: string;
+    updatedAt: string; // ISO 8601 maybe
+    isLike: boolean;
     likeCnt: number;
     commentCnt: number;
 }

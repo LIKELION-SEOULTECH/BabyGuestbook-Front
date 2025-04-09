@@ -1,20 +1,20 @@
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
+import { useInView } from "react-intersection-observer";
 import GuestbookList from "./GuestbookList";
 import GuestbookTopbar from "./GuestbookTopbar";
+import CommentModal from "./comment/CommentModal";
 import { LoadingSpinner } from "../ui/loading-spinner";
-import { Emotion, Order } from "@/types/post";
-import { TempPost } from "@/types/tempPost";
+import { CreatePostRequest, Order } from "@/types/post";
 import {
     useUpdatePostMutation,
     useDeletePostMutation,
     useCreatePostMutation,
-    usePostsQuery,
+    usePostsInfiniteQuery,
 } from "@/queries/postQueries";
+import { Emotion } from "@/constants/emotion";
 
 export interface GuestbookListContainerProps {
-    currentOrder: Order;
-    currentEmotion: Emotion | undefined;
     onCommentClick?: (postId: number) => void;
     onPlaylistClick?: (
         emotion: keyof typeof import("@/constants/emotion").emotionConfigs
@@ -26,16 +26,34 @@ export interface GuestbookListContainerProps {
  * API Call, state 관리 등 비즈니스 로직을 담당합니다.
  */
 function GuestbookListContainer({
-    currentOrder,
-    currentEmotion,
-    onCommentClick,
     onPlaylistClick,
 }: GuestbookListContainerProps) {
-    const { data, isLoading, isError, error, refetch } = usePostsQuery({
+    const [currentOrder, setCurrentOrder] = useState<Order>("LATEST");
+    const [currentEmotion, setCurrentEmotion] = useState<Emotion>("ALL");
+
+    const {
+        data,
+        isLoading,
+        fetchNextPage,
+        hasNextPage,
+        isFetchingNextPage,
+    } = usePostsInfiniteQuery({
         order: currentOrder,
         emotion: currentEmotion,
-        pageSize: 10,
+        pageSize: 5, // 페이지당 5개의 포스트
     });
+
+    const { ref, inView } = useInView({
+        threshold: 0.5,
+        triggerOnce: false,
+        rootMargin: isFetchingNextPage ? "-100% 0px" : "0px",
+    });
+
+    useEffect(() => {
+        if (inView && hasNextPage && !isLoading && !isFetchingNextPage) {
+            fetchNextPage();
+        }
+    }, [inView, hasNextPage, isLoading, isFetchingNextPage, fetchNextPage]);
 
     const createMutation = useCreatePostMutation();
     const updateMutation = useUpdatePostMutation();
@@ -68,18 +86,38 @@ function GuestbookListContainer({
         [deleteMutation]
     );
 
-    const handleAddPost = (newPost: TempPost) => {
-        createMutation.mutate(newPost, {
-            onSuccess: () => toast.success("방명록이 작성되었습니다."),
-            onError: () => toast.error("작성에 실패했습니다."),
-        });
+    const handleAddPost = ({
+        content,
+        password,
+    }: CreatePostRequest) => {
+        createMutation.mutate(
+            { content, password },
+            {
+                onSuccess: () => toast.success("방명록이 작성되었습니다."),
+                onError: () => toast.error("작성에 실패했습니다."),
+            }
+        );
     };
+
+    // 댓글 modal focus 대상입니다.
+    const [activePostId, setActivePostId] = useState<number | null>(null);
+
+    const allPosts = data?.pages.flatMap((page) => page.data) || [];
 
     return (
         <>
-            <GuestbookTopbar onPostSubmit={handleAddPost} />
+            <GuestbookTopbar
+                onPostSubmit={handleAddPost}
+                onOrderChange={(value: Order) => {
+                    setCurrentOrder(value);
+                }}
+                onEmotionChange={(value: Emotion) => {
+                    setCurrentEmotion(value);
+                }}
+                currentOrder={currentOrder}
+            />
 
-            {isLoading ? (
+            {isLoading && !data ? (
                 <div className="flex flex-col justify-center items-center h-40 gap-4">
                     <LoadingSpinner className="text-secondary" />
                     <span className="text-sm text-secondary">
@@ -87,14 +125,34 @@ function GuestbookListContainer({
                     </span>
                 </div>
             ) : (
-                <GuestbookList
-                    items={data?.data || []}
-                    onEdit={handleEdit}
-                    onDelete={handleDelete}
-                    onCommentClick={onCommentClick ?? (() => {})}
-                    onPlaylistClick={onPlaylistClick ?? (() => {})}
-                />
+                <>
+                    <GuestbookList
+                        items={allPosts}
+                        onEdit={handleEdit}
+                        onDelete={handleDelete}
+                        onCommentClick={(postId) => setActivePostId(postId)}
+                        onPlaylistClick={onPlaylistClick ?? (() => { })}
+                    />
+                    <div
+                        ref={ref}
+                        className="h-20 flex justify-center items-center"
+                    >
+                        {isFetchingNextPage ? (
+                            <LoadingSpinner className="text-secondary" />
+                        ) : !hasNextPage && allPosts.length > 0 ? (
+                            <span className="text-sm text-secondary">
+                                더 이상 불러올 방명록이 없습니다.
+                            </span>
+                        ) : null}
+                    </div>
+                </>
             )}
+
+            <CommentModal
+                postId={activePostId ?? 0}
+                open={activePostId !== null}
+                onClose={() => setActivePostId(null)}
+            />
         </>
     );
 }

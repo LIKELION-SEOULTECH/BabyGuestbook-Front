@@ -1,10 +1,7 @@
 export interface CommentDTO {
     commentId: number;
     content: string;
-    user: {
-        userId: number;
-        username: string;
-    };
+    username: string;
     updatedAt: string;
 }
 
@@ -14,3 +11,13 @@ export interface CommentResponse {
     message: string;
     data: CommentDTO[];
 }
+
+export interface CreateCommentRequest {
+    content: string;
+    password: string;
+}
+
+export interface DeleteCommentRequest {
+    password: string;
+}
+

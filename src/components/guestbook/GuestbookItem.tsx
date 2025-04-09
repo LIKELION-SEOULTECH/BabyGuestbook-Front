@@ -7,6 +7,7 @@ import {
     ContextMenuTrigger,
 } from "../ui/context-menu";
 import GuestbookActionDialog from "./GuestbookActionDialog";
+import LikeButton from "./GuestbookLikeButton";
 
 import useGuestbookAction from "@/hooks/guestbook/useGuestbookAction";
 import { emotionConfigs } from "@/constants/emotion";
@@ -38,8 +39,10 @@ function GuestbookItem({
     postId,
     content,
     emotion,
-    user,
+    username,
     updatedAt,
+    isLike,
+    likeCnt,
     commentCnt,
     onCommentClick,
     onPlaylistClick,
@@ -75,7 +78,7 @@ function GuestbookItem({
                     <div className="flex flex-col items-start gap-4">
                         {/* Top - 작성자 및 작성 시간 */}
                         <div className="flex items-center gap-2 text-secondary text-sm leading-none tracking-tight">
-                            <span>{user.username}</span>
+                            <span>{username}</span>
                             <span className="w-0.5 h-0.5 bg-secondary rounded-full" />
                             <span>{relativeUpdatedTime}</span>
                         </div>
@@ -85,9 +88,14 @@ function GuestbookItem({
                             {content}
                         </p>
 
-                        {/* Bottom - 댓글 버튼 및 플레이리스트 버튼 */}
-                        <div className="w-full pt-2 flex items-center gap-4">
-                            <div
+                        {/* Bottom - 좋아요, 댓글 버튼 및 플레이리스트 버튼 */}
+
+
+                        <div className="w-full flex items-center gap-4">
+
+                            <LikeButton postId={postId} isLike={isLike} likeCnt={likeCnt} />
+
+                            <button
                                 onClick={onCommentClick}
                                 className="flex items-center gap-1 text-secondary text-xs cursor-pointer transition-transform duration-150 ease-in-out hover:scale-103 active:scale-97"
                             >
@@ -97,8 +105,9 @@ function GuestbookItem({
                                     className="rotate-y-180"
                                 />
                                 <span>{commentCnt}</span>
-                            </div>
-                            <div
+                            </button>
+
+                            <button
                                 onClick={onPlaylistClick}
                                 className="flex items-center rounded-sm cursor-pointer transition-transform duration-150 ease-in-out hover:scale-103 active:scale-97"
                             >
@@ -116,7 +125,7 @@ function GuestbookItem({
                                     </span>
                                 </div>
                                 <Play size={12} className="ml-1" />
-                            </div>
+                            </button>
                         </div>
                     </div>
                 </ContextMenuTrigger>
