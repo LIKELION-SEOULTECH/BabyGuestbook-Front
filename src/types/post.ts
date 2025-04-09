@@ -1,20 +1,10 @@
-import { emotionConfigs } from "@/constants/emotion";
-
-export type Emotion =
-    | "HAPPY"
-    | "SAD"
-    | "ANGRY"
-    | "SURPRISED"
-    | "FEAR"
-    | "CALM"
-    | "UNCOMFORTABLE"
-    | "ALL";
+import type { BaseEmotion } from "@/constants/emotion";
 
 export type Order = "LATEST" | "COMMENT";
 
 export interface ReadPostParameter {
     order: Order;
-    emotion?: Emotion;
+    emotion?: BaseEmotion;
     pageSize: number;
     lastPostId?: number;
 }
@@ -36,7 +26,7 @@ export interface DeletePostRequest {
 export interface PostDTO {
     postId: number;
     content: string;
-    emotion: Emotion;
+    emotion: BaseEmotion;
     username: string;
     updatedAt: string; // ISO 8601 maybe
     isLike: boolean;

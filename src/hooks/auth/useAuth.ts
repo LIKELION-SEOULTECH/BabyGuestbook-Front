@@ -25,35 +25,13 @@ export const useAuth = () => {
         window.location.reload(); // ui 반영 문제-> 그냥 새로고침으로 해결 ㅎㅎ
     }, []);
 
+    /**
+    * 사실 redirect이지만 rename하기 귀찮아서 둡니다.
+    */
     const loginWithPopup = useCallback(() => {
-        const KAKAO_AUTH_URL = "http://localhost:8080/login/oauth2/code/kakao";
-        const popup = window.open(KAKAO_AUTH_URL, "oauthPopup", "width=500,height=600");
-
-        if (!popup) return; // 팝업 차단인 경우..
-
-        // 팝업에서 redirect polling
-        const polling = setInterval(() => {
-            try {
-                if (!popup || popup.closed) {
-                    clearInterval(polling);
-                    return;
-                }
-                if (popup.location.href.indexOf("accessToken") !== -1) {
-                    const urlParams = new URLSearchParams(popup.location.search);
-                    const accessToken = urlParams.get("accessToken");
-
-                    if (accessToken) {
-                        signIn(accessToken);
-                    }
-
-                    clearInterval(polling);
-                    popup.close();
-                }
-            } catch (error) {
-                // cors는 그냥 무시~
-            }
-        }, 500);
-    }, [signIn]);
+        const KAKAO_AUTH_URL = "http://localhost:8080/oauth2/authorization/kakao";
+        window.location.href = KAKAO_AUTH_URL;
+    }, []);
 
     useEffect(() => {
         checkAuth();

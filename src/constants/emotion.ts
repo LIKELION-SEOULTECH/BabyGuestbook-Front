@@ -1,90 +1,83 @@
+export type BaseEmotion =
+    | "HAPPINESS"
+    | "SADNESS"
+    | "ANGRY"
+    | "SURPRISED"
+    | "FEAR"
+    | "NEUTRAL"
+    | "DISGUST";
+
 export interface EmotionConfig {
-    key:
-        | "HAPPY"
-        | "SAD"
-        | "ANGRY"
-        | "SURPRISED"
-        | "FEAR"
-        | "CALM"
-        | "UNCOMFORTABLE";
-    label: string; // 한글 label
-    playlistButtonTextPreColored: string; // 플리 버튼에서 앞에 색칠되는 부분
-    playlistButtonTextPost: string; // 플리 버튼 라벨 나머지
-    color: string;
+    key: BaseEmotion;
+    label: string; // 한글 감정 이름
+    playlistButtonTextPreColored: string; // 버튼 앞 색칠되는 부분
+    playlistButtonTextPost: string; // 버튼 나머지 문구
+    color: string; // HEX 색상
 }
 
-export const emotionConfigs: Record<EmotionConfig["key"], EmotionConfig> = {
-    HAPPY: {
-        key: "HAPPY",
+export const emotionConfigs: Record<BaseEmotion, EmotionConfig> = {
+    HAPPINESS: {
+        key: "HAPPINESS",
         label: "기쁨",
         playlistButtonTextPreColored: "기쁨",
         playlistButtonTextPost: "가득한 노래 듣기",
-        color: "#ff9350", // --color-emotion-happy
+        color: "#ff9350",
     },
-    SAD: {
-        key: "SAD",
+    SADNESS: {
+        key: "SADNESS",
         label: "슬픔",
         playlistButtonTextPreColored: "슬픔을",
         playlistButtonTextPost: "감싸줄 노래",
-        color: "#7ca7ff", // --color-emotion-sad
+        color: "#7ca7ff",
     },
     ANGRY: {
         key: "ANGRY",
         label: "화남",
         playlistButtonTextPreColored: "화가 날 때",
         playlistButtonTextPost: "들어보세요",
-        color: "#ff6b6b", // --color-emotion-angry
+        color: "#ff6b6b",
     },
     SURPRISED: {
         key: "SURPRISED",
         label: "놀람",
         playlistButtonTextPreColored: "놀람",
-        playlistButtonTextPost: "속의 설렘을 담음 음악",
-        color: "#ffd479", // --color-emotion-surprised
+        playlistButtonTextPost: "속의 설렘을 담은 음악",
+        color: "#ffd479",
     },
     FEAR: {
         key: "FEAR",
         label: "공포",
         playlistButtonTextPreColored: "공포를",
         playlistButtonTextPost: "달래주는 잔잔한 선율",
-        color: "#a18adf", // --color-emotion-fear
+        color: "#a18adf",
     },
-    CALM: {
-        key: "CALM",
+    NEUTRAL: {
+        key: "NEUTRAL",
         label: "잔잔함",
         playlistButtonTextPreColored: "잔잔한",
         playlistButtonTextPost: "하루의 음악",
-        color: "#e0e0e0", // --color-emotion-calm
+        color: "#e0e0e0",
     },
-    UNCOMFORTABLE: {
-        key: "UNCOMFORTABLE",
+    DISGUST: {
+        key: "DISGUST",
         label: "불편함",
         playlistButtonTextPreColored: "불편한",
         playlistButtonTextPost: "마음을 씻는 음악",
-        color: "#8fc1a9", // --color-emotion-uncomfortable
+        color: "#8fc1a9",
     },
 };
 
 export const EMOTIONS = {
     ALL: "ALL",
-    HAPPY: "HAPPY",
-    SAD: "SAD",
-    ANGRY: "ANGRY",
-    SURPRISED: "SURPRISED",
-    FEAR: "FEAR",
-    CALM: "CALM",
-    UNCOMFORTABLE: "UNCOMFORTABLE",
-} as const;
-
-export const EMOTION_LABELS = {
-    [EMOTIONS.ALL]: "전체",
-    [EMOTIONS.HAPPY]: "기쁨",
-    [EMOTIONS.SAD]: "슬픔",
-    [EMOTIONS.ANGRY]: "화남",
-    [EMOTIONS.SURPRISED]: "놀람",
-    [EMOTIONS.FEAR]: "공포",
-    [EMOTIONS.CALM]: "잔잔함",
-    [EMOTIONS.UNCOMFORTABLE]: "불편함",
+    ...Object.fromEntries(Object.keys(emotionConfigs).map((key) => [key, key])),
 } as const;
 
 export type Emotion = (typeof EMOTIONS)[keyof typeof EMOTIONS];
+
+export const EMOTION_LABELS: Record<Emotion, string> = {
+    ALL: "전체",
+    ...Object.entries(emotionConfigs).reduce((acc, [key, config]) => {
+        acc[key as BaseEmotion] = config.label;
+        return acc;
+    }, {} as Record<BaseEmotion, string>),
+};

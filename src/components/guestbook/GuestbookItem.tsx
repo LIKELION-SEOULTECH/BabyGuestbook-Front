@@ -1,5 +1,5 @@
 import { memo, useMemo, useCallback } from "react";
-import { Heart, MessageSquare, Play } from "lucide-react";
+import { MessageSquare, Play } from "lucide-react";
 import {
     ContextMenu,
     ContextMenuContent,

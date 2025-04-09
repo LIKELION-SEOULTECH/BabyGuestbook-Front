@@ -14,8 +14,7 @@ export interface CommentResponse {
 
 export interface CreateCommentRequest {
     content: string;
-    username?: string;
-    password?: string;
+    password: string;
 }
 
 export interface DeleteCommentRequest {

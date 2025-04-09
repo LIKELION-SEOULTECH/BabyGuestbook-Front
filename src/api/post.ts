@@ -36,7 +36,7 @@ export const createPost = async (
     body: CreatePostRequest
 ): Promise<ApiResponse<PostDTO>> => {
     const response = await client.post<ApiResponse<PostDTO>>(
-        "/posts/post",
+        "/posts",
         body
     );
     return response.data;

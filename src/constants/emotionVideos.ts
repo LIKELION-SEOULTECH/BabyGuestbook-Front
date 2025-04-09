@@ -13,13 +13,13 @@ export const emotionVideoMapping: Record<
     keyof typeof emotionConfigs,
     VideoEntry[]
 > = {
-    HAPPY: [
+    HAPPINESS: [
         {
             id: "X1Yv9DPhIdM",
             title: "커피도 분위기도 완벽한 하루 ☕",
         },
     ],
-    SAD: [
+    SADNESS: [
         { id: "hAAixJ8lux8", title: "덕수궁에서 듣는 어쿠스틱" },
         { id: "3vrcoQTvAEw", title: "ADOY와 늦여름의 청춘" },
     ],
@@ -33,8 +33,8 @@ export const emotionVideoMapping: Record<
     FEAR: [
         { id: "dcDmiUuQb6o", title: "우리집을 카페로 만드는 독보적인 음악들" },
     ],
-    CALM: [{ id: "4eheUvD7tfg", title: "뉴욕에서 보내는 여름" }],
-    UNCOMFORTABLE: [
+    NEUTRAL: [{ id: "4eheUvD7tfg", title: "뉴욕에서 보내는 여름" }],
+    DISGUST: [
         { id: "UdUkMDCdG58", title: "가을에 듣기 좋은 재즈플레이리스트" },
     ],
 };

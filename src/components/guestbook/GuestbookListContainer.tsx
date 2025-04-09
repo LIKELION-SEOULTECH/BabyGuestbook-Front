@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useInView } from "react-intersection-observer";
 import GuestbookList from "./GuestbookList";
@@ -34,8 +34,6 @@ function GuestbookListContainer({
     const {
         data,
         isLoading,
-        isError,
-        error,
         fetchNextPage,
         hasNextPage,
         isFetchingNextPage,
